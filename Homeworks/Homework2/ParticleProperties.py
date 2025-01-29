@@ -38,9 +38,9 @@ def ParticleInfo(filename, particle_type, particle_number):
 	return dist_mag, vel_mag, mass
 
 #testing the function works
-test_dist, test_vel, test_mass = ParticleInfo('MW_000.txt', 'Disk Stars', 100)
-test_dist = np.around(test_dist.to(u.lyr),3)
-print('Answers to question 5')
-print('distance:',test_dist)
-print('velocity:', test_vel)
-print('mass:', test_mass)
+#test_dist, test_vel, test_mass = ParticleInfo('MW_000.txt', 'Disk Stars', 100)
+#test_dist = np.around(test_dist.to(u.lyr),3)
+#print('Answers to question 5')
+#print('distance:',test_dist)
+#print('velocity:', test_vel)
+#print('mass:', test_mass)
