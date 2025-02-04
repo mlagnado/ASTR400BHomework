@@ -13,7 +13,7 @@ from scipy.integrate import quad # For integration
 # https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.quad.html
 # https://www.tutorialspoint.com/scipy/scipy_integrate.htm
 
-
+print('## Part A ##')
 # ## Part A:  Schechter Fxn
 # 
 # The galaxy luminosity function in the nearby universe is well described by a Schechter Function:
@@ -26,7 +26,7 @@ from scipy.integrate import quad # For integration
 # 
 # 
 #  $\phi_\ast$ =1.66 $  \times 10^{-2}$  $h^3$ Mpc$^{-3}$
-# 
+# red shift
 #  $\alpha$ =  -0.81 
 # 
 # 
@@ -80,15 +80,19 @@ def schechter_M(m,phi_star=0.0166,m_star=-23.19,alpha=-0.81):
 
     return schechterM
 
-
+print('## Question 1 ##')
 # # Q1 
 # 
 # Utilizing the defined function, plot the Schechter Function using the above parameter values over a magnitude range of -17 to -26. 
 # Try to reproduce the black solid line in Smith+2009 MNRAS 397,868 [UKIDSS Survey] Figure below.
 # 
-# 
+# Image is being viewed outside of the python file
 # ![Smith](./Smith09.png)
+#mk = np.arange(-26,-16.99,0.1)
+#print(mk)
 
+
+print('## Quesstion 2 ##')
 # # Q2 
 # 
 # Galaxies in the Virgo Cluster have different parameters, like $\alpha$=-1.35  (Ferrarese+2016 ApJ 824).
@@ -103,7 +107,8 @@ def schechter_M(m,phi_star=0.0166,m_star=-23.19,alpha=-0.81):
 
 
 # Create an array to store Kband Magnitudes from -26 to -17
-
+mk = np.arange(-26,-16.99,0.1)
+print(mk)
 
 
 
@@ -113,11 +118,14 @@ fig = plt.figure(figsize=(10,10))  # sets the scale of the figure
 ax = plt.subplot(111) 
 
 # Plot the default values (y axis log)
-# ADD HERE
+ax.semilogy(mk,schechter_M(mk),color='blue',linewidth=5, label='Smith+09')
 
 # Q2 solutions: change alpha
-# ADD HERE
+ax.semilogy(mk,schechter_M(mk, alpha=-1.35),color='red'
+            ,linewidth=5, label=r'high $\alpha$', linestyle=':')
 
+ax.semilogy(mk,schechter_M(mk, alpha=-0.6),color='black'
+            ,linewidth=5, label=r'low $\alpha$', linestyle='--')
 
 # Add labels
 plt.xlabel(r'M$_k$ + 5Log($h$)', fontsize=22)
@@ -135,9 +143,9 @@ matplotlib.rcParams['ytick.labelsize'] = label_size
 legend = ax.legend(loc='upper right',fontsize='x-large')
 
 # Save to a file
-#plt.savefig('Schechter_M.png')
+plt.savefig('Schechter_M.png')
 
-
+print('## Question 3 ##')
 # # Q3
 # 
 # Build a function to compute the Schechter Function in terms of luminosity.
@@ -181,11 +189,15 @@ def schechter_L(lum, n_star=8e-3, l_star=1.4e10, alpha=-0.7):
     """
     
     # Break down the equation into parts
+    #all of the constants together
+    a = n_star/l_star
+
+    b = np.exp(-lum/l_star) #bright end
     
+    c = (lum/l_star) **alpha #faint end
+
     
-    
-    
-    schechterL = 0 # Template  ADD HERE
+    schechterL = a*b*c # put it all together
     
     return schechterL
 
@@ -206,6 +218,10 @@ print(x(5, 6))
 # Example Usage of quad and lambda
 
 # Version 1
+#quad function integrates a function over two bounds
+#returns the result of integratino as well as an uncertainty
+#quad(function, lower bound, upper bound)
+print('integrating sin in 3 different ways')
 print(quad(np.sin, 0, np.pi))
 
 # Version 2
@@ -218,7 +234,21 @@ def ex(x):
 
 print(quad(lambda x: ex(x), 0, np.pi))
 
+#What fraction of the integrated luminosity density lies above l_star
+#in the case where alpha= -0.7
+#luminosity density above L_star
+l_upper = quad(lambda L: L*schechter_L(L), 1.4*10**10, 1*10**14)
+print(l_upper)
 
+l_total = quad(lambda L: L*schechter_L(L), 0.1, 1*10**14)
+print(l_total)
+#hiwhc makes sense because its an order of magnitude larger
+
+ratio = l_upper[0]/l_total[0]
+print(f'Ratio of L*/L_total: {np.round(ratio, 3)}')
+#This makes sense because it is approximately halfway ~0.5
+
+print('## Part B ##')
 # ## Part B: IMF 
 # 
 # Create a function called `imf` that defines the IMF: 
