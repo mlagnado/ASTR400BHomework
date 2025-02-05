@@ -8,7 +8,7 @@ def ComponentMass(filename, particle_type):
 	inputs: filename (string) where the data will be read from
 		particle_type (int) the type of particle that you wish to sum
 			Halo = 1, Disk = 2, Bulge = 3
-	output: total_mass (astropy value) the total mass of a particular particle type in the data
+	output: total_mass (astropy quantity) the total mass of a particular particle type in the data
 	'''
 	time, total, data = Read(filename) #reads the data
 	index = np.where(data['type'] == particle_type) #finds the indexes of one particle type
@@ -17,3 +17,8 @@ def ComponentMass(filename, particle_type):
 	total_mass = total_mass/(10**2) #mass is given in units of e10 MSol divide by e2 to get e12 units
 	total_mass = np.round(total_mass, 3) #round the mass value to 3 decimal places
 	return total_mass
+
+#Code used to get each value in table
+#Changed file between MW, M31, and M33 and component from 1,2,and 3
+#MWHaloMass = ComponentMass('MW_000.txt',1)
+#print(MWHaloMass)
