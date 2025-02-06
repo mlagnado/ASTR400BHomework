@@ -301,41 +301,83 @@ def imf(m, m_min=0.1, m_max=120, alpha=2.35):
                 normalized fraction of stars at a given m
     '''
     
-    norm_imf = 0 # Template ADD HERE
+    #Determine the normalization for the IMF
+    to_normalize = quad(lambda m: m**(-alpha), m_min, m_max)
+
+    #nomralization factor
+    norm = 1/to_normalize[0]
+
+    #define the normalized imf
+    norm_imf = norm*m**(-alpha)
     
     
     return norm_imf
     
 
-
+print('## Question 1 ##')
 # ## Q1: 
 # Double Check: if you integrate your function from 0.1 to 120 you should return 1.0 
 # 
 
+test = quad(lambda m: imf(m), 0.1, 120)
+print(np.round(test[0],3))
 
-
-
-
-
+print('## Question 2 ##')
 # ## Q2: 
 # Integrate your normalized function to compute the fractional number of stars with stellar masses greater than the sun and less 
 # than 120 M$_\odot$.
 
+frac = quad(lambda m: imf(m), 1, 120)
+print(r'Number of stars with a stellar mass greater than the sun and less than 120 M$_{\odot}$',np.round(frac[0], 3))
 
 
-
-
-
+print('## Question 3 ##')
 # ## Q3:
 # 
 # How might you modify the above to return the fraction of MASS in stars from 0.1Msun to 120 Msun ? instead of fraction of the total numbers of stars.
 
+def imf_Mass(m, m_min=0.1, m_max=120, alpha=2.35):
+    
+    ''' Function that defines the IMF (default is Salpeter). 
+        The function is normalized such that 
+        it returns the fraction of mass within the 
+        interval m_min to m_max.
+        
+        Inputs:
+            m: array of floats 
+                Array of stellar masses (Msun)
+            
+            m_min:  float
+                minimum mass (Msun)
+            
+            m_max : float
+                maximal mass (Msun)
+                
+            alpha : float
+                power law. default is the Salpeter IMF
+                
+        Output:
+            norm_imf_mass: float
+                normalized fraction of mass at a given mass range
+    '''
+    
+    #Determine the normalization for the IMF
+    to_normalize = quad(lambda m: m*m**(-alpha), m_min, m_max) #Now it is weighted by the mass
+
+    #nomralization factor
+    norm = 1/to_normalize[0]
+
+    #define the normalized imf
+    norm_imf_mass = m*norm*m**(-alpha)
+    
+    
+    return norm_imf_mass
+
+#Determine the fraction of mass in stars that are more massive than the sun
+frac2 = quad(lambda m: imf_Mass(m), 1, 120)
+print(np.round(frac2[0],3))
 
 
-
-
-
-
-
-
-
+#With a 500 solar mass cluster.. 
+#How much of that mass is between 1 and 120 solar masses
+print(5000*np.round(frac2[0],3))
