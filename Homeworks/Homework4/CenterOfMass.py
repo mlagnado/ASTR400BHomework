@@ -44,12 +44,12 @@ class CenterOfMass:
         # the following only gives the example of storing the mass
         self.m = self.data['m'][self.index]
         # write your own code to complete this for positions and velocities
-        self.x = 0
-        self.y = 0
-        self.z = 0
-        self.vx = 0
-        self.vy = 0
-        self.vz = 0
+        self.x = self.data['x'][self.index]
+        self.y = self.data['y'][self.index]
+        self.z = self.data['z'][self.index]
+        self.vx = self.data['vx'][self.index]
+        self.vy = self.data['vy'][self.index]
+        self.vz = self.data['vz'][self.index]
 
 
     def COMdefine(self,a,b,c,m):
@@ -78,14 +78,14 @@ class CenterOfMass:
         # write your own code to compute the generic COM
         #using Eq. 1 in the homework instructions
         # xcomponent Center of mass
-        a_com = 0
+        a_com = np.sum(a*m)/np.sum(m)
         # ycomponent Center of mass
-        b_com = 0
+        b_com = np.sum(b*m)/np.sum(m)
         # zcomponent Center of mass
-        c_com = 0
+        c_com = np.sum(c*m)/np.sum(m)
 
         # return the 3 components separately
-
+	return a_com, b_com, c_com
 
 
     def COM_P(self, delta):
@@ -110,7 +110,7 @@ class CenterOfMass:
         x_COM, y_COM, z_COM = self.COMdefine(self.x, self.y, self.z, self.m)
         # compute the magnitude of the COM position vector.
         # write your own code below
-        r_COM = 0
+        r_COM = (x_COM**2 + y_COM**2 + z_COM**2)**0.5
 
 
         # iterative process to determine the center of mass
@@ -119,10 +119,10 @@ class CenterOfMass:
         # compute the difference between particle coordinates
         # and the first guess at COM position
         # write your own code below
-        x_new = 0
-        y_new = 0
-        z_new = 0
-        r_new = 0
+        x_new = self.x-x_COM
+        y_new = self.y-y_COM
+        z_new = self.z-z_COM
+        r_new = (x_new**2 + y_new**2 + z_new**2)**0.5
 
         # find the max 3D distance of all particles from the guessed COM
         # will re-start at half that radius (reduced radius)
@@ -139,11 +139,11 @@ class CenterOfMass:
         while (change > delta):
             # select all particles within the reduced radius (starting from original x,y,z, m)
             # write your own code below (hints, use np.where)
-            index2 = 0
-            x2 = 0
-            y2 = 0
-            z2 = 0
-            m2 = 0
+            index2 = np.where(r_new < r_max)
+            x2 = x_new[index2]
+            y2 = y_new[index2]
+            z2 = z_new[index2]
+            m2 = self.m[index2]
 
             # Refined COM position:
             # compute the center of mass position using
