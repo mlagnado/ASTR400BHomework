@@ -83,7 +83,6 @@ class CenterOfMass:
         b_com = np.sum(b*m)/np.sum(m)
         # zcomponent Center of mass
         c_com = np.sum(c*m)/np.sum(m)
-        print(a_com,b_com,c_com)
         # return the 3 components separately
         return a_com, b_com, c_com
 
@@ -260,9 +259,9 @@ if __name__ == '__main__' :
     # below gives you an example of calling the class's functions
     # MW:   store the position and velocity COM
     MW_COM_p = MW_COM.COM_P(0.1)
-    print(MW_COM_p)
+    # print(MW_COM_p)
     MW_COM_v = MW_COM.COM_V(MW_COM_p[0], MW_COM_p[1], MW_COM_p[2])
-    print(MW_COM_v)
+    # print(MW_COM_v)
 
     # now write your own code to answer questions
 
@@ -292,3 +291,7 @@ if __name__ == '__main__' :
     print('Seperation between M33 and M31 (position):', np.round(M31_p_mag-M33_p_mag,3))
     print('Seperation between M33 and M31 (velocity):', np.round(M31_v_mag-M33_v_mag,3))
 
+    print('The iterative process to determine the COM is important because of how close they are.')
+    print('The COM allows us to estimate how the two bodies react to each other, so iterating')
+    print('and having a more accurate COM gives a more accurate prtediction of how the two galaxies')
+    print('will affect each other.')
