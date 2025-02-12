@@ -140,40 +140,39 @@ class CenterOfMass:
             # select all particles within the reduced radius (starting from original x,y,z, m)
             # write your own code below (hints, use np.where)
             index2 = np.where(r_new < r_max)
-            x2 = x_new[index2]
-            y2 = y_new[index2]
-            z2 = z_new[index2]
+            x2 = self.x[index2]
+            y2 = self.y[index2]
+            z2 = self.z[index2]
             m2 = self.m[index2]
 
             # Refined COM position:
             # compute the center of mass position using
             # the particles in the reduced radius
             # write your own code below
-            x_COM2, y_COM2, z_COM2 = 0
+            x_COM2, y_COM2, z_COM2 = self.COMdefine(x2,y2,z2,m2)
             # compute the new 3D COM position
             # write your own code below
-            r_COM2 = 0
+            r_COM2 = (x_COM2**2 + y_COM2**2 + z_COM2**2)**0.5
 
             # determine the difference between the previous center of mass position
             # and the new one.
             change = np.abs(r_COM - r_COM2)
             # uncomment the following line if you want to check this
-            # print ("CHANGE = ", change)
+            print ("CHANGE = ", change)
 
             # Before loop continues, reset : r_max, particle separations and COM
-
             # reduce the volume by a factor of 2 again
             r_max /= 2.0
             # check this.
-            #print ("maxR", r_max)
+            print ("maxR", r_max)
 
             # Change the frame of reference to the newly computed COM.
             # subtract the new COM
             # write your own code below
-            x_new = 0
-            y_new = 0
-            z_new = 0
-            r_new = 0
+            x_new = self.x-x_COM
+            y_new = self.y-y_COM
+            z_new = self.z-z_COM
+            r_new = (x_new**2 + y_new**2 + z_new**2)**0.5
 
             # set the center of mass positions to the refined values
             x_COM = x_COM2
@@ -187,7 +186,10 @@ class CenterOfMass:
         # set the correct units using astropy and round all values
         # and then return the COM positon vector
         # write your own code below
-
+	p_COM[0] = p_COM[0]*u.kpc
+	p_COM[1] = p_COM[1]*u.kpc
+	p_COM[2] = p_COM[2]*u.kpc
+	return p_COM
 
 
     def COM_V(self, x_COM, y_COM, z_COM):
