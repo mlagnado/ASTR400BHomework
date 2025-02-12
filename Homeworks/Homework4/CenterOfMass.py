@@ -83,9 +83,9 @@ class CenterOfMass:
         b_com = np.sum(b*m)/np.sum(m)
         # zcomponent Center of mass
         c_com = np.sum(c*m)/np.sum(m)
-
+        print(a_com,b_com,c_com)
         # return the 3 components separately
-	return a_com, b_com, c_com
+        return a_com, b_com, c_com
 
 
     def COM_P(self, delta):
@@ -158,13 +158,13 @@ class CenterOfMass:
             # and the new one.
             change = np.abs(r_COM - r_COM2)
             # uncomment the following line if you want to check this
-            print ("CHANGE = ", change)
+            # print ("CHANGE = ", change)
 
             # Before loop continues, reset : r_max, particle separations and COM
             # reduce the volume by a factor of 2 again
             r_max /= 2.0
             # check this.
-            print ("maxR", r_max)
+            # print ("maxR", r_max)
 
             # Change the frame of reference to the newly computed COM.
             # subtract the new COM
@@ -186,10 +186,8 @@ class CenterOfMass:
         # set the correct units using astropy and round all values
         # and then return the COM positon vector
         # write your own code below
-	p_COM[0] = p_COM[0]*u.kpc
-	p_COM[1] = p_COM[1]*u.kpc
-	p_COM[2] = p_COM[2]*u.kpc
-	return p_COM
+        p_COM = np.round(p_COM,2)*u.kpc
+        return p_COM
 
 
     def COM_V(self, x_COM, y_COM, z_COM):
@@ -219,34 +217,35 @@ class CenterOfMass:
         # write your own code below
         # Note that x_COM, y_COM, z_COM are astropy quantities and you can only subtract one astropy quantity from another
         # So, when determining the relative positions, assign the appropriate units to self.x
-        xV = 0
-        yV = 0
-        zV = 0
-        rV = 0
+        xV = self.x*u.kpc-x_COM
+        yV = self.y*u.kpc-y_COM
+        zV = self.z*u.kpc-z_COM
+        rV = (xV**2 + yV**2 + zV**2)**0.5
 
         # determine the index for those particles within the max radius
         # write your own code below
-        indexV = 0
+        indexV = np.where(rV < rv_max)
 
         # determine the velocity and mass of those particles within the mas radius
         # write your own code below
-        vx_new = 0
-        vy_new = 0
-        vz_new = 0
-        m_new =  0
+        vx_new = self.vx[indexV]
+        vy_new = self.vy[indexV]
+        vz_new = self.vz[indexV]
+        m_new =  self.m[indexV]
 
         # compute the center of mass velocity using those particles
         # write your own code below
-        vx_COM, vy_COM, vz_COM = 0
+        vx_COM, vy_COM, vz_COM = self.COMdefine(vx_new, vy_new, vz_new, m_new)
 
         # create an array to store the COM velocity
         # write your own code below
-        v_COM = 0
+        v_COM = np.array([vx_COM, vy_COM, vz_COM])
 
         # return the COM vector
         # set the correct units usint astropy
         # round all values
-
+        v_COM = np.round(v_COM, 2)*u.km/u.s
+        return v_COM
 
 
 # ANSWERING QUESTIONS
@@ -266,4 +265,30 @@ if __name__ == '__main__' :
     print(MW_COM_v)
 
     # now write your own code to answer questions
+
+    print('COM position for MW:', MW_COM_p)
+    print('COM velocity for MW:', MW_COM_v)
+    M31_COM = CenterOfMass("M31_000.txt", 2)
+    M31_COM_p = M31_COM.COM_P(0.1)
+    M31_COM_v = M31_COM.COM_V(M31_COM_p[0], M31_COM_p[1], M31_COM_p[2])
+    print('COM position for M31:', M31_COM_p)
+    print('COM velocity for M31:', M31_COM_v)
+    M33_COM = CenterOfMass("M33_000.txt", 2)
+    M33_COM_p = M33_COM.COM_P(0.1)
+    M33_COM_v = M33_COM.COM_V(M33_COM_p[0], M33_COM_p[1], M33_COM_p[2])
+    print('COM position for M33:', M33_COM_p)
+    print('COM velocity for M33:', M33_COM_v)
+
+    MW_p_mag = (MW_COM_p[0]**2 + MW_COM_p[1]**2 + MW_COM_p[2]**2)**0.5
+    M31_p_mag = (M31_COM_p[0]**2 + M31_COM_p[1]**2 + M31_COM_p[2]**2)**0.5
+    print('Seperation between MW and M31 (position):', np.round(M31_p_mag-MW_p_mag,3))
+
+    MW_v_mag = (MW_COM_v[0]**2 + MW_COM_v[1]**2 + MW_COM_v[2]**2)**0.5
+    M31_v_mag = (M31_COM_v[0]**2 + M31_COM_v[1]**2 + M31_COM_v[2]**2)**0.5
+    print('Seperation between MW and M31 (velocity):', np.round(M31_v_mag-MW_v_mag,3))
+
+    M33_p_mag = (M33_COM_p[0]**2 + M33_COM_p[1]**2 + M33_COM_p[2]**2)**0.5
+    M33_v_mag = (M33_COM_v[0]**2 + M33_COM_v[1]**2 + M33_COM_v[2]**2)**0.5
+    print('Seperation between M33 and M31 (position):', np.round(M31_p_mag-M33_p_mag,3))
+    print('Seperation between M33 and M31 (velocity):', np.round(M31_v_mag-M33_v_mag,3))
 
