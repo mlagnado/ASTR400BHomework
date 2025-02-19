@@ -4,6 +4,7 @@ import astropy.table as tbl
 from ReadFile import Read
 from CenterOfMass import CenterOfMass
 import matplotlib.pyplot as plt
+from astropy.constants import G
 
 class MassProfile:
 
@@ -20,7 +21,7 @@ class MassProfile:
         self.gname = galaxy
 
 
-    def MassEnclosed(self,ptype,radius):
+    def MassEnclosed(self,ptype,radii):
 
         COM = CenterOfMass(self.filename,ptype)
 
@@ -29,15 +30,51 @@ class MassProfile:
         yR = self.y-COM_p[1]
         zR = self.z-COM_p[2]
         R = (xR**2 + yR**2 + zR**2)**0.5
-        Masses = np.zeros(shape=len(radius))
-        for i in range(len(radius)):
-            indexR = np.where(R < radius[i]*u.kpc)
+        Masses = np.zeros(shape=len(radii))
+        for i in range(len(radii)):
+            indexR = np.where(R < radii[i]*u.kpc)
             m_tot = np.sum(self.m[indexR])
             Masses[i] = m_tot
         Masses = Masses*1e10
         return Masses*u.Msun
 
+    def MassEnclosedTotal(self,radii):
+        MHalo = self.MassEnclosed(1,radii)
+        MDisk = self.MassEnclosed(2,radii)
+        if self.gname == 'M33':
+            MTotal = MHalo + MDisk
+        else:
+            MBulge = self.MassEnclosed(3,radii)
+            MTotal = MHalo + MDisk + MBulge
+        return MTotal
 
+    def HernquistMass(self,radius,a,Mhalo):
+        numerator = Mhalo*radius**2
+        denominator = (a+radius)**2
+        halo_mass = numerator/denominator
+        return halo_mass
+
+    def CicularVelocity(self,ptype,radii):
+        circvel = np.zeros(shape=len(radii))
+        G = G.to(u.kpc*u.km**2/u.s**2/u.Msun)
+        for i in range(len(radii)):
+            Mass = self.MassEnclosed(ptype,radii[i])
+            circvel[i] = np.sqrt(G*Mass/radii[i])
+        return circvel
+    
+    def CircularVelocityTotal(self,radii):
+        VTotal = np.zeros(shape=len(radii))
+        G = G.to(u.kpc*u.km**2/u.s**2/u.Msun)
+        for i in range(len(radii)):
+            MTotal = self.MassEnclosedTotal(radii[i])
+            VTotal[i] = np.sqrt(G*MTotal/radii[i])
+        return VTotal
+
+    def HernquistVCirc(self,radius,a,Mhalo):
+        G = G.to(u.kpc*u.km**2/u.s**2/u.Msun)
+        Mass = self.HernquistMass(radius,a,Mhalo)
+        VCirc = np.sqrt(G*Mass/radius)
+        return VCirc
 
 
 
@@ -45,7 +82,6 @@ if __name__ == '__main__' :
     MW = MassProfile("MW", 0)
     rs = np.arange(0.25,30.5,.5)
     MWmass = MW.MassEnclosed(1,rs) 
-	##Cant plot units?
     fig = plt.figure(figsize=(11,8))
     ax = plt.subplot(111)
     plt.scatter(rs,MWmass)
