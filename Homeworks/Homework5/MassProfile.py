@@ -29,12 +29,13 @@ class MassProfile:
         yR = self.y-COM_p[1]
         zR = self.z-COM_p[2]
         R = (xR**2 + yR**2 + zR**2)**0.5
-        Masses = []
-        for r in radius:
-            indexR = np.where(R < r*u.kpc)
+        Masses = np.zeros(shape=len(radius))
+        for i in range(len(radius)):
+            indexR = np.where(R < radius[i]*u.kpc)
             m_tot = np.sum(self.m[indexR])
-            Masses.append(m_tot*1e10*u.Msun)
-        return Masses
+            Masses[i] = m_tot
+        Masses = Masses*1e10
+        return Masses*u.Msun
 
 
 
@@ -42,9 +43,16 @@ class MassProfile:
 
 if __name__ == '__main__' :
     MW = MassProfile("MW", 0)
-    rs = np.arange(0.25,30.5,1.5)
-    print(rs)
-    MWmass = MW.MassEnclosed(1,rs)
-    print(MWmass)
+    rs = np.arange(0.25,30.5,.5)
+    MWmass = MW.MassEnclosed(1,rs) 
 	##Cant plot units?
-    plt.scatter(MWmass,rs)
+    fig = plt.figure(figsize=(11,8))
+    ax = plt.subplot(111)
+    plt.scatter(rs,MWmass)
+    plt.yscale("log")
+    plt.xlabel('Radius (kpc)')
+    plt.title(f'Mass profile for MW Halo')
+    plt.ylabel(r'Log(Mass Enclosed ($M_{\odot}$))')
+    plt.xlim(-1,32)
+    plt.ylim(10**9,4*10**11)
+    plt.savefig('P2plot.png')
