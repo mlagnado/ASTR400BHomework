@@ -155,7 +155,7 @@ if __name__ == '__main__' :
     plt.ylim(10**9,4*10**11)
     plt.legend()
     plt.show()
-    plt.savefig('MWMass.png')
+#    plt.savefig('MWMass.png')
     
     M31 = MassProfile("M31", 0) #Creates the mass profile for M31
     M31massHalo = M31.MassEnclosed(1,rs) #Calculates the enclosed halo mass at each radius
@@ -178,7 +178,7 @@ if __name__ == '__main__' :
     plt.ylim(10**9,4*10**11)
     plt.legend()
     plt.show()
-    plt.savefig('M31Mass.png')
+#    plt.savefig('M31Mass.png')
 
     M33 = MassProfile("M33", 0) #Creates the mas profile for M33
     M33massHalo = M33.MassEnclosed(1,rs) #Calculates the enclosed halo mass at each radius
@@ -200,7 +200,7 @@ if __name__ == '__main__' :
     plt.ylim(10**9,4*10**11)
     plt.legend()
     plt.show()
-    plt.savefig('M33Mass.png')
+#    plt.savefig('M33Mass.png')
 
     #plot 2
     a = 60 #Used in class for MW
@@ -220,7 +220,7 @@ if __name__ == '__main__' :
     plt.ylabel(r'Circular Velocity $(\frac{km}{s})$')
     plt.legend()
     plt.show()
-    plt.savefig('MWVel.png')
+#    plt.savefig('MWVel.png')
 
     a = 60
     M31RotHalo = M31.CircularVelocity(1,rs) #Calculates the circular velocity for the enclosed halo mass
@@ -239,7 +239,7 @@ if __name__ == '__main__' :
     plt.ylabel(r'Circular Velocity $(\frac{km}{s})$')
     plt.legend()
     plt.show()
-    plt.savefig('M31Vel.png')
+#    plt.savefig('M31Vel.png')
 
     a = 30
     M33RotHalo = M33.CircularVelocity(1,rs) #Calculates the circular velocity for the enclosed halo mass
@@ -257,8 +257,11 @@ if __name__ == '__main__' :
     plt.ylabel(r'Circular Velocity $(\frac{km}{s})$')
     plt.legend()
     plt.show()
-    plt.savefig('M33Vel.png')
+#    plt.savefig('M33Vel.png')
     '''
     ##I could have shortened the plotting part of the code with a for loop
     but it was not that much extra to just copy paste it twice##
+
+    I had to manually save these figures because they were coming back blank
+    I tried to get the hernwuist profile to line up but could not find the error there
     '''
