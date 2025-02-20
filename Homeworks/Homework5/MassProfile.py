@@ -85,7 +85,7 @@ class MassProfile:
         '''
         numerator = Mhalo*(radii**2) #Calculates the numerator of the hernquist profile equation
         denominator = (a+radii)**2 #Calculates the denominator of the hernquist profile equation
-        halo_mass = numerator/denominator #Calculkates the hernquist mass profile
+        halo_mass = numerator/denominator #Calculates the hernquist mass profile
         return halo_mass
 
     def CircularVelocity(self,ptype,radii):
@@ -162,7 +162,7 @@ if __name__ == '__main__' :
     M31massDisk = M31.MassEnclosed(2,rs)#Calculates the enclosed disk mass at each radius
     M31massBulge = M31.MassEnclosed(3,rs)#Calculates the enclosed bulge mass at each radius
     M31massTotal = M31.MassEnclosedTotal(rs) #Calculates the enclosed total mass at each radius
-    a = 60
+    a = 60 #Used because M31 is similar to MW
     M31Hernquist = M31.HernquistMass(rs,a,M31massHalo) #Calculates the hernquist mass at each radius
     ax = plt.subplot(111)
     plt.plot(rs,M31massHalo, label='Halo Mass Profile')
@@ -185,7 +185,7 @@ if __name__ == '__main__' :
     M33massDisk = M33.MassEnclosed(2,rs) #Calculates the enclosed disk mass at each radius
     #M33 does not have a Bulge
     M33massTotal = M33.MassEnclosedTotal(rs) #Calculates the enclosed total mass at each radius
-    a = 30
+    a = 25 #Used because M33 is smaller than M31 and MW
     M33Hernquist = M33.HernquistMass(rs,a,M33massHalo) #Calculates the hernquist mass at each radius
     ax = plt.subplot(111)
     plt.plot(rs,M33massHalo, label='Halo Mass Profile')
