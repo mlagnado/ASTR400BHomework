@@ -45,7 +45,7 @@ class CenterOfMass:
         self.m = self.data['m'][self.index]
         # write your own code to complete this for positions and velocities
         self.x = self.data['x'][self.index] #get x position data for chosen particle type
-        self.y = self.data['y'][self.index] 
+        self.y = self.data['y'][self.index]
         self.z = self.data['z'][self.index]
         self.vx = self.data['vx'][self.index]
         self.vy = self.data['vy'][self.index]
@@ -111,7 +111,7 @@ class CenterOfMass:
         x_COM, y_COM, z_COM = self.COMdefine(self.x, self.y, self.z, self.m) #initial guess for COM
         # compute the magnitude of the COM position vector.
         # write your own code below
-        r_COM = (x_COM**2 + y_COM**2 + z_COM**2)**0.5 #magnitude of position vector
+        r_COM = np.sqrt(x_COM**2 + y_COM**2 + z_COM**2) #magnitude of position vector
 
 
         # iterative process to determine the center of mass
@@ -123,7 +123,7 @@ class CenterOfMass:
         x_new = self.x-x_COM #shift x position data by COM
         y_new = self.y-y_COM
         z_new = self.z-z_COM
-        r_new = (x_new**2 + y_new**2 + z_new**2)**0.5 #new magnitude of position bvector
+        r_new = np.sqrt(x_new**2 + y_new**2 + z_new**2) #new magnitude of position bvector
 
         # find the max 3D distance of all particles from the guessed COM
         # will re-start at half that radius (reduced radius)
@@ -153,7 +153,7 @@ class CenterOfMass:
             x_COM2, y_COM2, z_COM2 = self.COMdefine(x2,y2,z2,m2) #recalculate COM
             # compute the new 3D COM position
             # write your own code below
-            r_COM2 = (x_COM2**2 + y_COM2**2 + z_COM2**2)**0.5 #recalculate magnitude of position vector
+            r_COM2 = np.sqrt(x_COM2**2 + y_COM2**2 + z_COM2**2) #recalculate magnitude of position vector
 
             # determine the difference between the previous center of mass position
             # and the new one.
@@ -172,10 +172,10 @@ class CenterOfMass:
             # Change the frame of reference to the newly computed COM.
             # subtract the new COM
             # write your own code below
-            x_new = self.x-x_COM #shift the x position data by the new COM
-            y_new = self.y-y_COM
-            z_new = self.z-z_COM
-            r_new = (x_new**2 + y_new**2 + z_new**2)**0.5
+            x_new = self.x-x_COM2 #shift the x position data by the new COM
+            y_new = self.y-y_COM2
+            z_new = self.z-z_COM2
+            r_new = np.sqrt(x_new**2 + y_new**2 + z_new**2)
 
             # set the center of mass positions to the refined values
             x_COM = x_COM2 #reinitialize the data so that the new COM is our COM
@@ -223,7 +223,7 @@ class CenterOfMass:
         xV = self.x*u.kpc-x_COM #shift the x position data by the COM
         yV = self.y*u.kpc-y_COM
         zV = self.z*u.kpc-z_COM
-        rV = (xV**2 + yV**2 + zV**2)**0.5 #calculate the magnitude of position vector
+        rV = np.sqrt(xV**2 + yV**2 + zV**2) #calculate the magnitude of position vector
 
         # determine the index for those particles within the max radius
         # write your own code below
