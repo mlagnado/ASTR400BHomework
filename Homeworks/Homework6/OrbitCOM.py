@@ -42,7 +42,7 @@ def Orbit_COM(galaxy, start, end, n):
 
     delta = 0.1
     volDec = 2.0
-    if galaxy == 'M33'
+    if galaxy == 'M33':
         volDec = 4.0
     # generate the snapshot id sequence 
     # it is always a good idea to also check if the input is eligible (not required)
@@ -52,30 +52,33 @@ def Orbit_COM(galaxy, start, end, n):
         check if the input is eligible
     '''
     # initialize the array for orbital info: t, x, y, z, vx, vy, vz of COM
-    orbit = np.zeros(len(snap_ids),7)
-    
+    orbit = np.zeros([len(snap_ids),7])
+    print(orbit.shape)
     # a for loop 
     for i, snap_id in enumerate(snap_ids): # loop over files
-        
+        print(f"Currently computing snap number {snap_id}, counter: {i}")
         # compose the data filename (be careful about the folder)
         snap_num = '000' + str(snap_id) #Turns the snap number into a string
         snap_num = snap_num[-3:] #Makes sure the snap number is only 3 characters long
-        filename = "%s_"%(galaxy) + snap_num + '.txt' #Creates the filename
+        filename = (galaxy) + "/" + "%s_"%(galaxy) + snap_num + '.txt' #Creates the filename
         # Initialize an instance of CenterOfMass class, using disk particles
         COM = CenterOfMass(filename, 2)
         # Store the COM pos and vel. Remember that now COM_P required VolDec
         COM_pos = COM.COM_P(delta,volDec)
-        COM_vel = COM.COM_V(COM_pos[0], Com_pos[1], COM_pos[2])
+        COM_vel = COM.COM_V(COM_pos[0], COM_pos[1], COM_pos[2])
         # store the time, pos, vel in ith element of the orbit array,  without units (.value) 
         # note that you can store 
         # a[i] = var1, *tuple(array1)
-        orbit[0][i] = snap_id
-'''
-How do I get the time
-'''
+        orbit[i][0] = COM.time.value/1000 #units of Gyr
+        orbit[i][1] = COM_pos[0].value #.value takes away units
+        orbit[i][2] = COM_pos[1].value
+        orbit[i][3] = COM_pos[2].value
+        orbit[i][4] = COM_vel[0].value
+        orbit[i][5] = COM_vel[1].value
+        orbit[i][6] = COM_vel[2].value
         
         # print snap_id to see the progress
-        print(snap_id)
+        print(f"Finishing calculation on snap number {snap_id}")
         
     # write the data to a file
     # we do this because we don't want to have to repeat this process 
@@ -90,7 +93,7 @@ How do I get the time
 # Recover the orbits and generate the COM files for each galaxy
 # read in 800 snapshots in intervals of n=5
 # Note: This might take a little while - test your code with a smaller number of snapshots first! 
-
+Orbit_COM("MW",0,800,5)
 
 
 
