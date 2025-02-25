@@ -190,10 +190,24 @@ class AbundanceMatching:
     
         return SHMratio 
     
+    def StellarMass(self):
+        '''
+        To compute the stellar mass using equation 2 of Moster + 2013
+        (stellar/halo mass ratio)
+
+        no inputs
+        outputs:
+          Starmass float stellar mass in Msun
+        '''
+        starmass = self.mhalo * self.SHMratio()
+        return starmass
+
+print('## Question 1 ##')
  # Q1: add a function to the class that takes the SHM ratio and returns 
 # The stellar mass 
 
 
+print('## Part C ##')
 # # Part C : Plot the Moster Relation
 # 
 # Reproduce the below figure from Moster + 2013 
@@ -204,15 +218,15 @@ class AbundanceMatching:
 
 
 mh = np.logspace(10,15,1000) # Logarithmically spaced array
-
+#halo mass array
 
 
 
 # Define Instances of the Class for each redshift
 MosterZ0 = AbundanceMatching(mh,0)
-
-
-
+MosterZ05 = AbundanceMatching(mh,0.5)
+MosterZ1 = AbundanceMatching(mh,1)
+MosterZ2 = AbundanceMatching(mh,2)
 
 
 fig,ax = plt.subplots(figsize=(10,8))
@@ -226,7 +240,12 @@ matplotlib.rcParams['ytick.labelsize'] = label_size
 # Plot z = 0
 plt.plot(np.log10(mh), np.log10(MosterZ0.StellarMass()),
          linewidth = 5, label='z=0')
-
+plt.plot(np.log10(mh), np.log10(MosterZ05.StellarMass()),
+         linewidth = 5, label='z=0.5',linestyle='--')
+plt.plot(np.log10(mh), np.log10(MosterZ1.StellarMass()),
+         linewidth = 5, label='z=1',linestyle=':')
+plt.plot(np.log10(mh), np.log10(MosterZ2.StellarMass()),
+         linewidth = 5, label='z=2',linestyle='-.')
 # Continue plotting for the other redshifts here
 
 
@@ -240,21 +259,36 @@ plt.ylabel('log (m$_\star$/M$_\odot$)', fontsize=22)
 plt.legend(loc='lower right',fontsize='x-large')
 
 # save the file 
-plt.savefig(AbundanceMatching_Lab5.png)
+plt.savefig('AbundanceMatching_Lab5.png')
 
-
+print('## Part D ##')
 # # Part D
 # 
+print('## Question 1 ##')
 # # Q1
 # 
 # In studies that have modeled the Magellanic Clouds prior to 2010, the LMC is traditioanlly modeled with a halo (dark matter) mass of order $3 \times 10^{10}$M$_\odot$.  
 # 
+print('# A #')
 # ## A) 
 # According to $\Lambda$CDM theory, what should be the stellar mass of the LMC halo be at z=0?  
+halo_LMC1 = 3*10**10 #traditional model
+#create an abundance matching object
+LMC1 = AbundanceMatching(halo_LMC1, 0)
+#Find the stellar mass for this object
+LMC1star = LMC1.StellarMass()
+print(np.round(LMC1star/1e9,3))
+print(np.round(LMC1star/3e9*100))
 # 
+print('# B #')
 # ## B) 
 # How does this stellar mass compare to the actual observed stellar mass of the LMC at the present day of ~$3 \times 10^9$ M$_\odot$ ? 
+halo_LMC2 = 17e10
+LMC2 = AbundanceMatching(halo_LMC2,0)
+LMC2star = LMC2.StellarMass()
+print(np.round(LMC2star/1e9,3))
 # 
+print('# C #')
 # ## C) 
 # What is the $\Lambda$CDM expected halo mass for the LMC (using Abundance Matching)?  
 
@@ -262,16 +296,26 @@ plt.savefig(AbundanceMatching_Lab5.png)
 
 
 
-
+print('## Question 2 ##')
 # # Q2
 # 
 # ## A) 
 # What is the expected stellar mass of an L* galaxy at z=0? 
 # 
+M1halo_z0 = MosterZ0.logM1()
+print(f"Log M1, z=0: {M1halo_z0}")
+
+#Create a new instance of the class with halo mass = logM1 at z=0
+M1Z0 = AbundanceMatching(10**M1halo_z0,0)
+M1star_z0 = M1Z0.StellarMass()
+print(f'Stellar mass of an L* galaxy at z=0: {np.round(M1star_z0/1e10,3)}')
 # ## B)
 # What is the expected stellar mass of an L* galaxy at z = 2? 
-
-
-
+#Same thing for Z=2
+M1halo_z2 = MosterZ2.logM1()
+print(f"Log M1, z=2: {M1halo_z2}")
+M1Z2 = AbundanceMatching(10**M1halo_z2,2)
+M1star_z2 = M1Z2.StellarMass()
+print(f'Stellar mass of an L* galaxy at z=2: {np.round(M1star_z2/1e10,3)}')
 
 
