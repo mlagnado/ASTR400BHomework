@@ -147,12 +147,54 @@ def vector_dif(vector1, vector2):
 # Plot the Orbit of the galaxies 
 #################################
 fig = plt.figure()
-plt.plot(MW[:,0], vector_dif(MW,M31)[:,0])
+plt.plot(MW[:,0], vector_dif(MW,M31)[:,0], label='MW-M31', color='r')
 plt.xlabel('Time [Gyr]')
-plt.ylabel('Seperatino [kpc]')
+plt.ylabel('Seperation [kpc]')
 plt.title('Seperation between MW and M31 over time')
+#plt.semilogy()
+plt.legend()
+plt.savefig('MW-M31sep.png')
+plt.show()
 
+fig = plt.figure()
+plt.plot(M31[:,0], vector_dif(M31,M33)[:,0], label='M31-M33', color='r')
+plt.xlabel('Time [Gyr]')
+plt.ylabel('Seperation [kpc]')
+plt.title('Seperation between M31 and M33 over time')
+#plt.semilogy()
+plt.legend()
+plt.savefig('M31-M33sep.png')
+plt.show()
 
 # Plot the orbital velocities of the galaxies 
 #################################
 
+fig = plt.figure()
+plt.plot(MW[:,0], vector_dif(MW,M31)[:,1], label='Mw-M31', color='r')
+plt.xlabel('Time [Gyr]')
+plt.ylabel('Relative Velocity [km/s]')
+plt.title('Relative Velocity between MW and M31 over time')
+#plt.semilogy()
+plt.legend()
+plt.savefig('MW-M31vel.png')
+plt.show()
+
+fig = plt.figure()
+plt.plot(M31[:,0], vector_dif(M31,M33)[:,1], label='M31-M33', color='r')
+plt.xlabel('Time [Gyr]')
+plt.ylabel('Relative Velocity [km/s]')
+plt.title('Relative Velocity between M31 and M33 over time')
+#plt.semilogy()
+plt.legend()
+plt.savefig('M31-M33vel.png')
+plt.show()
+
+
+##### Questions #####
+print('### Question 1 ###')
+print('The MW and M31 will experience 3 close encounters in the future.\n However looking at a logy plot there are more depening on the definition of close encounter.')
+print('### Question 2 ###')
+print('From the plots we can see that the number of minima for seperation is the same number of peaks in relative velocity.')
+print('### Quesstion 3 ###')
+print('MW and M31 appear to merge around 6-7 Gyr which is when the seperation between the two stops being so jumpy.\n Their relative velocity also approaches 0 at this time.')
+print('M33\'s orbit becomes faster as the minima in its relative velocity increases.')
