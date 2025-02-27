@@ -14,7 +14,7 @@ import astropy.units as u
 # import plotting modules
 import matplotlib.pyplot as plt
 import matplotlib
-get_ipython().run_line_magic('matplotlib', 'inline')
+#get_ipython().run_line_magic('matplotlib', 'inline')
 
 # my modules
 from ReadFile import Read
@@ -28,25 +28,26 @@ from GalaxyMass import ComponentMass
 # In this lab we will use Homework 5 solutions to compute the mass profile of M31's bulge. 
 # 
 # We will turn the mass profile into a density profile and see if we can fit it reasonably well with a sersic profile. 
-
+print('## Part A ##')
 # # Part A
 # 
 # Determine the Surface Mass Density Profile for the Simulated M31 bulge
 # 
 # a) find the positions and masses of all the bulge particles
 
-
-
 # Create a center of mass object for M31
 # I.e. an instance of the CenterOfMass class 
-
-
-
+M31_COM = CenterOfMass('M31_000.txt', 3)
+M31_COM_P = M31_COM.COM_P(0.1) #COM position for M31
 
 # Use the center of mass object to 
 # store the x, y, z, positions and mass of the bulge particles
 # be sure to correct for the COM position of M31
- 
+#COM coords
+x = M31_COM.x - M31_COM_P[0].value
+y = M31_COM.y - M31_COM_P[1].value
+z = M31_COM.z - M31_COM_P[2].value
+m = M31_COM.m #units of 1e10 msol 
 
 
 # b) Change the bulge particle positions into cylindrical coordinates
@@ -56,9 +57,9 @@ from GalaxyMass import ComponentMass
 # Determine the positions of the bulge particles in 
 # cylindrical coordinates. 
 
-
 # c) determine the projected surface mass density profile
-
+cyl_r = np.sqrt(x**2 + y**2 + z**2) #radius in cylindrical coords
+cyl_theta = np.arctan(y,x) #theta in cylindrical coords
 
 
 def SurfaceDensity(r,m):
@@ -121,7 +122,9 @@ def SurfaceDensity(r,m):
 # Define the surface mass density profile for the simulated bulge
 # and the corresponding annuli
 
+r_annuli , sigmaM31bulge = SurfaceDensity(cyl_r,m)
 
+print('## Part B ##')
 # # Part B 
 # 
 # 
@@ -149,7 +152,7 @@ def sersicE(r, re, n, mtot):
     PARMETERS
     ---------
         r: `float`
-            Distance from the center of the galaxy (kpc)
+            Distance from the center of the galaxy (kpc) #cyl radii
         re: `float`
             The Effective radius (2D radius that contains 
             half the light) (kpc)
@@ -165,9 +168,17 @@ def sersicE(r, re, n, mtot):
             profile for an elliptical in Lsun/kpc^2
 
     """
+    #Assume M/L ratio of 1
+    lum=mtot
+    #effective surface brightness
+    Ie = lum/7.27/np.pi/(re**2)
+    
+    #Write sersic profile
+    a = (r/re)**(1/n)
+    b = -7.67*(a-1)
 
-
-    I=0
+    #Surface brightness
+    I=Ie*np.exp(b)
     
     return I
     
@@ -177,17 +188,15 @@ def sersicE(r, re, n, mtot):
 # b) Compute the M31 Bulge Mass Profile using Homework 5 MassProfile
 # 
 
-
-
 # Create a mass profile object for M31
 # using solution to Homework 5
 
-
-
+M31mass = MassProfile("M31", 0)
 
 # Determine the Bulge mass profile
 # use the annuli defined for the surface mass density profile
 
+bulge_mass = M31mass.massEnclosed(3,r_annuli).value #no units >:) <- evil unit removing face
 
 # c) Determine the effective radius of the bulge. Compute the total mass using Component Mass, from the GalaxyMass code, and find the radius that contains half this mass. 
 
@@ -195,35 +204,40 @@ def sersicE(r, re, n, mtot):
 
 # Determine the total mass of the bulge
 
-
+bulge_total = ComponentMass("M31_000.txt", 3)*1e12#fixes units
+print(f'{bulge_total:.2e}') #All good here
 
 
 # Find the effective radius of the bulge, 
 # Re encloses half of the total bulge mass
 
+
+
 # Half the total bulge mass
 
-
-
+b_half = bulge_total/2
+print(b_half)
 
 # Find the indices where the bulge mass is larger than b_half
 
+index = np.where(bulge_mass > b_half)
 
 # take first index where Bulge Mass > b_half
 # check : should match b_half
 
-
+print(f"{bulge_mass[index][0]:.2e}")
 
 
 # Define the Effective radius of the bulge
 
-
+re_bulge = r_annuli[index][0] *3/4
+print(re_bulge)
 # d) Define the Sersic Profile for the M31 Bulge
 
 
 
 # Sersic Index = 4
-
+SersicM31Bulge = sersicE(r_annuli, re_bulge, 4, bulge_total)
 
 # # Part D
 # 
@@ -244,11 +258,11 @@ matplotlib.rcParams['ytick.labelsize'] = label_size
 
 # Surface Density Profile
 # YOU ADD HERE
-
+ax.loglog(r_annuli, sigmaM31bulge, lw=2, label='Sim bulge')
 
 # Sersic fit to the surface brightness Sersic fit
 # YOU ADD HERE
-
+ax.loglog(r_annuli, SersicM31Bulge/1e10, linestyle='-.', lw=3, label='Sersic n=4')
 
 
 plt.xlabel('log r [ kpc]', fontsize=22)
@@ -266,7 +280,7 @@ plt.ylim(1e-5,0.1)
 ax.legend(loc='best', fontsize=22)
 fig.tight_layout()
 
-#plt.savefig('Lab6.png')
+plt.savefig('Lab6.png')
 
 
 
