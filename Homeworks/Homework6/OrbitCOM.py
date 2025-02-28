@@ -67,13 +67,16 @@ def Orbit_COM(galaxy, start, end, n):
         # store the time, pos, vel in ith element of the orbit array,  without units (.value) 
         # note that you can store 
         # a[i] = var1, *tuple(array1)
-        orbit[i][0] = COM.time.value/1000 #units of Gyr
-        orbit[i][1] = COM_pos[0].value #.value takes away units
-        orbit[i][2] = COM_pos[1].value
-        orbit[i][3] = COM_pos[2].value
-        orbit[i][4] = COM_vel[0].value
-        orbit[i][5] = COM_vel[1].value
-        orbit[i][6] = COM_vel[2].value
+        orbit[i] = COM.time.value/1000, *tuple(COM_pos.value), *tuple(COM_vel.value) #adds stuff to new file
+
+        #How i did it originally
+        #orbit[i][0] = COM.time.value/1000 #units of Gyr
+        #orbit[i][1] = COM_pos[0].value #.value takes away units
+        #orbit[i][2] = COM_pos[1].value
+        #orbit[i][3] = COM_pos[2].value
+        #orbit[i][4] = COM_vel[0].value
+        #orbit[i][5] = COM_vel[1].value
+        #orbit[i][6] = COM_vel[2].value
         
         # print snap_id to see the progress
         print(f"Finishing calculation on snap number {snap_id}")
@@ -143,9 +146,11 @@ def vector_dif(vector1, vector2):
 # Determine the magnitude of the relative position and velocities 
 
 # of MW and M31
-#print(vector_dif(MW,M31))
+print("Relative position and velocity difference from MW and M31")
+print(vector_dif(MW,M31))
 # of M33 and M31
-#print(vector_dif(M33,M31))
+print("Relative position and velocity difference from M31 and M33")
+print(vector_dif(M33,M31))
 
 
 
