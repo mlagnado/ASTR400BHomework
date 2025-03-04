@@ -153,13 +153,13 @@ vtot = np.sqrt(vxD**2 + vyD**2 + vzD**2)
 r = np.array([xD,yD,zD]).T # transposed 
 v = np.array([vxD,vyD,vzD]).T
 
-
+print('## Part A ##')
 # # Part A:
 # 
 # Create plot of M31's disk density, using 2D Histograms 
 
 
-
+print('## Question 1 ##')
 # 1) Make plots 
 
 # M31 Disk Density 
@@ -172,7 +172,7 @@ fig, ax= plt.subplots(figsize=(12, 10))
 # https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html  
 #   e.g. 'magma', 'viridis'
 # can modify bin number to make the plot smoother
-
+plt.hist2d(xD,yD,bins=(100,100),norm=LogNorm(), cmap='viridis')
 
 cbar = plt.colorbar()
 cbar.set_label("Number of disk particle per bin", fontsize=15)
@@ -186,8 +186,8 @@ cbar.set_label("Number of disk particle per bin", fontsize=15)
 
 
 # Add axis labels
-plt.xlabel(' ', fontsize=22)
-plt.ylabel(' ', fontsize=22)
+plt.xlabel('x [kpc]', fontsize=22)
+plt.ylabel('y [kpc]', fontsize=22)
 
 #set axis limits
 plt.ylim(-40,40)
@@ -201,9 +201,9 @@ matplotlib.rcParams['ytick.labelsize'] = label_size
 
 
 # Save to a file
-#plt.savefig('Lab7_M31Disk.png')
+plt.savefig('Lab7_M31Disk.png')
 
-
+print(' ## Part B ##')
 # # Part B
 # 
 # Utilize the below code to rotate the M31 disk and plot it edge on and face on.
