@@ -108,10 +108,20 @@ print('## Part B ##')
 
 # # Step 1
 
-
-
-
-
+#write a function that returns the average SFR of a galaxy at a given redshift given its stellar mass
+def SFRMainSequence(Mstar, z):
+    '''
+    This is a function that computes the avg SFR of a galaxy
+    Inputs:
+        Mstar: float, stellar mass of the galaxy {Msun}
+        z: float, redshift
+    Outputs:
+        SFR: float, log of the Star Formatino Rate {Msun} 
+    '''
+    alpha=0.7-0.13*z
+    beta = 0.38 + 1.14*z -0.19*z**2
+    SFR = alpha*(np.log10(Mstar) -10.5)+beta
+    return SFR
 
 # # Step 2
 
