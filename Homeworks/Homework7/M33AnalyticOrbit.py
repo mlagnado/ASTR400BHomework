@@ -35,15 +35,13 @@ class M33AnalyticOrbit:
     """ Calculate the analytical orbit of M33 around M31 """
     
     def __init__(self, output_filename): # **** add inputs
-                """ **** ADD COMMENTS """
-	'''
-	This initializes the class and sets up various constant that will be used in the class calculations
-	Calculates positions and velocities of M31 and M33
-	Inputs:
-		output_filename: string, the filename where the output data will be stored
-	
-		
-	'''
+        '''
+        This initializes the class and sets up various constant that will be used in the class calculations
+        Calculates positions and velocities of M31 and M33
+        Inputs:
+            output_filename: string, the filename where the output data will be stored
+
+        '''
         ### get the gravitational constant (the value is 4.498502151575286e-06)
         self.G = const.G.to(u.kpc**3/u.Msun/u.Gyr**2).value
         
@@ -52,51 +50,59 @@ class M33AnalyticOrbit:
         
         ### get the current pos/vel of M33 
         # **** create an instance of the  CenterOfMass class for M33 
-	COM_M33 = CenterOfMass('M33', 2)
+        COM_M33 = CenterOfMass('M33_000.txt', 2)
         # **** store the position VECTOR of the M33 COM (.value to get rid of units)
-	COM_M33_pos = COM_M33.COM_P(0.1,4.0).value #in HW 6 we defiend volDec to be 4.0 for M33
+        COM_M33_pos = COM_M33.COM_P(0.1,4.0) #in HW 6 we defiend volDec to be 4.0 for M33
         # **** store the velocity VECTOR of the M33 COM (.value to get rid of units)
-        COM_M33_vel = COM_M33.COM_V(COM_M33_pos[0], COM_M33_pos[1], COM_M33_pos[2]).value
+        COM_M33_vel = COM_M33.COM_V(COM_M33_pos[0], COM_M33_pos[1], COM_M33_pos[2])
         
         ### get the current pos/vel of M31 
         # **** create an instance of the  CenterOfMass class for M31 
-	COM_M31 = CenterOfMass('M31',2)
+        COM_M31 = CenterOfMass('M31_000.txt',2)
         # **** store the position VECTOR of the M31 COM (.value to get rid of units)
-	COM_M31_pos = COM_M31.COM_P(0.1,2.0).value
+        COM_M31_pos = COM_M31.COM_P(0.1,2.0)
         # **** store the velocity VECTOR of the M31 COM (.value to get rid of units)
-        COM_M31_vel = COM_M31.COM_V(COM_M31_pos[0], COM_M31_pos[1], COM_M31_pos[2]).value
+        COM_M31_vel = COM_M31.COM_V(COM_M31_pos[0], COM_M31_pos[1], COM_M31_pos[2])
         
         ### store the DIFFERENCE between the vectors posM33 - posM31
         # **** create two VECTORs self.r0 and self.v0 and have them be the
         # relative position and velocity VECTORS of M33
-        self.r0=np.array([COM_M33_pos[0]-COM_M31_pos[0],COM_M33_pos[1]-COM_M31_pos[1],COM_M33_pos[2]-COM_M31_pos[2])
-        self.v0=np.array([COM_M33_vel[0]-COM_M31_vel[0],COM_M33_vel[1]-COM_M31_vel[1],COM_M33_vel[2]-COM_M31_vel[2])
+        self.r0=np.array(COM_M33_pos-COM_M31_pos)
+        self.v0=np.array(COM_M33_vel-COM_M31_vel)
         ### get the mass of each component in M31 
         ### disk
         # **** self.rdisk = scale length (no units)
-	self.rdisk = 5*u.kpc
+        self.rdisk = 5 #*u.kpc
         # **** self.Mdisk set with ComponentMass function. Remember to *1e12 to get the right units. Use the right ptype
         self.Mdisk = ComponentMass('M31_000.txt',2)*1e12
         ### bulge
         # **** self.rbulge = set scale length (no units)
-	self.rbulge = 1*u.kpc
+        self.rbulge = 1 #*u.kpc
         # **** self.Mbulge  set with ComponentMass function. Remember to *1e12 to get the right units Use the right ptype
-        self.Mbulge = ComponentMas('M31_000.txt',3)*1e12
+        self.Mbulge = ComponentMass('M31_000.txt',3)*1e12
         # Halo
         # **** self.rhalo = set scale length from HW5 (no units)
-	self.rhalo = 62*u.kpc
+        self.rhalo = 62 #*u.kpc
         # **** self.Mhalo set with ComponentMass function. Remember to *1e12 to get the right units. Use the right ptype
-	self.Mhalo = 1.921*u.Msun*1e12
+        self.Mhalo = 1.921*1e12
     
     
-    def HernquistAccel("****"): # it is easiest if you take as an input the position VECTOR 
+    def HernquistAccel(self, M, r_a, r): # it is easiest if you take as an input the position VECTOR 
         """ **** ADD COMMENTS """
-        
+        '''
+        This function computes the Hernquist acceleration
+        input:
+            M: float with astropy units, Mass of the galaxy component
+            r_a: float with astropy units, hernquist scale length
+            r: float with astropy units, position vector
+        output:
+            Hern: float with astropy units, acceleration vector induced by a hernquist profile
+        '''
         ### **** Store the magnitude of the position vector
-        rmag = "****"
+        rmag = np.sqrt(r[0]**2 + r[1]**2 + r[2]**2)
         
         ### *** Store the Acceleration
-        Hern =  "****" #follow the formula in the HW instructions
+        Hern =  -self.G*M/(rmag*(r_a+rmag)**2) * r #might have to fix to account for each component
         # NOTE: we want an acceleration VECTOR so you need to make sure that in the Hernquist equation you 
         # use  -G*M/(rmag *(ra + rmag)**2) * r --> where the last r is a VECTOR 
         
@@ -104,9 +110,17 @@ class M33AnalyticOrbit:
     
     
     
-    def MiyamotoNagaiAccel("****"):# it is easiest if you take as an input a position VECTOR  r 
-               """ **** ADD COMMENTS """
-
+    def MiyamotoNagaiAccel(self, M, r_d, r): # it is easiest if you take as an input a position VECTOR  r 
+        '''
+        This function calculates the acceleration using the Miyamoto Nagai profile (1975)
+            This profile mimics the exponential disk far away from the disk
+        input:
+            M: float with astropy units, Mass of galaxy component
+            r_d: float with astropy units, scale length for the disk of M31
+            r: float with astropy units, position vector
+        output:
+            Miya: flaot with astropy units, acceleration vector
+        '''
         
         ### Acceleration **** follow the formula in the HW instructions
         # AGAIN note that we want a VECTOR to be returned  (see Hernquist instructions)
@@ -115,93 +129,123 @@ class M33AnalyticOrbit:
         # differences in the z direction:
         #  multiply the whle thing by :   np.array([1,1,ZSTUFF]) 
         # where ZSTUFF are the terms associated with the z direction
-        
-        
-       
-        return 
+        R = np.sqrt(r[0]**2 + r[1]**2)
+        z_d = r_d/5.0
+        B = r_d + np.sqrt(r[2]**2 +z_d**2)
+        Miya = -self.G*M/((R**2 + B**2)**1.5) * r
+        Miya *= np.array([1,1,B/np.sqrt(r[2]**2 + z_d**2)])
+
+        return Miya
         # the np.array allows for a different value for the z component of the acceleration
      
     
-    def M31Accel("****"): # input should include the position vector, r
-                       """ **** ADD COMMENTS """
+    def M31Accel(self, r): # input should include the position vector, r
+        """ **** ADD COMMENTS """
 
         ### Call the previous functions for the halo, bulge and disk
         # **** these functions will take as inputs variable we defined in the initialization of the class like 
         # self.rdisk etc. 
-            
+        Bulge_a = self.HernquistAccel(self.Mbulge, self.rbulge, self.r0)
+        Halo_a = self.HernquistAccel(self.Mhalo, self.rhalo, self.r0)
+        Disk_a = self.MiyamotoNagaiAccel(self.Mdisk, self.rdisk, self.r0)
+        sum_accel = Bulge_a+Halo_a+Disk_a
             # return the SUM of the output of the acceleration functions - this will return a VECTOR 
-        return 
+        return sum_accel
     
     
     
-    def LeapFrog("****"): # take as input r and v, which are VECTORS. Assume it is ONE vector at a time
-                               """ **** ADD COMMENTS """
-        
+    def LeapFrog(self, dt, r, v): # take as input r and v, which are VECTORS. Assume it is ONE vector at a time
+        """ **** ADD COMMENTS """
+        if dt <= 0:
+            print('please use a positive timestep value \n If you do want a negative timestep,')
+            print('change the code in the LeapFrog function in the M33AnalyticOrbit class')
+            rnew, vnew = r, v
+            print('values are not being updated')
+            return rnew, vnew
         # predict the position at the next half timestep
-        rhalf = 
+        rhalf = r + v*(dt/2)
         
         # predict the final velocity at the next timestep using the acceleration field at the rhalf position 
-        vnew = 
+        vnew = v + self.M31Accel(rhalf)*dt
         
         # predict the final position using the average of the current velocity and the final velocity
         # this accounts for the fact that we don't know how the speed changes from the current timestep to the 
         # next, so we approximate it using the average expected speed over the time interval dt. 
-        rnew = 
+        rnew = r + (1/2)*(v+vnew)*dt
         
-        return # **** return the new position and velcoity vectors
+        return rnew, vnew #return the new position and velcoity vectors
     
     
     
     def OrbitIntegration(self, t0, dt, tmax):
-         """ **** ADD COMMENTS """
+        """ **** ADD COMMENTS """
 
         # initialize the time to the input starting time
-        t = "****"
+        t = t0
         
         # initialize an empty array of size :  rows int(tmax/dt)+2  , columns 7
-        orbit = np.zeros("****")
+        orbit = np.zeros([int(tmax/dt)+2, 7])
         
         # initialize the first row of the orbit
         orbit[0] = t0, *tuple(self.r0), *tuple(self.v0)
         # this above is equivalent to 
         # orbit[0] = t0, self.r0[0], self.r0[1], self.r0[2], self.v0[0], self.v0[1], self.v0[2]
-        
-        
+        self.r = self.r0
+        self.v = self.v0
         # initialize a counter for the orbit.  
         i = 1 # since we already set the 0th values, we start the counter at 1
         
         # start the integration (advancing in time steps and computing LeapFrog at each step)
-        while ("****"):  # as long as t has not exceeded the maximal time 
+        while (t <= tmax): #might have to do <=  # as long as t has not exceeded the maximal time 
             
             # **** advance the time by one timestep, dt
-           
+            t += dt
             # **** store the new time in the first column of the ith row
-            orbit["****"] =
+            orbit[i][0] = t
             
             # ***** advance the position and velocity using the LeapFrog scheme
             # remember that LeapFrog returns a position vector and a velocity vector  
             # as an example, if a function returns three vectors you would call the function and store 
             # the variable like:     a,b,c = function(input)
-            
+            self.r, self.v = self.LeapFrog(dt, self.r, self.v)
          
     
             # ****  store the new position vector into the columns with indexes 1,2,3 of the ith row of orbit
             # TIP:  if you want columns 5-7 of the Nth row of an array called A, you would write : 
             # A[n, 5:8] 
             # where the syntax is row n, start at column 5 and end BEFORE column 8
-            
+            orbit[i, 1:4] = self.r
             
             # ****  store the new position vector into the columns with indexes 1,2,3 of the ith row of orbit
-            
+            orbit[i, 4:8] = self.v
             
             # **** update counter i , where i is keeping track of the number of rows (i.e. the number of time steps)
-        
+            i += 1
         
         
         # write the data to a file
-        np.savetxt(self.filename, orbit, fmt = "%11.3f"*7, comments='#', 
+        np.savetxt(self.fileout, orbit, fmt = "%11.3f"*7, comments='#', 
                    header="{:>10s}{:>11s}{:>11s}{:>11s}{:>11s}{:>11s}{:>11s}"\
                    .format('t', 'x', 'y', 'z', 'vx', 'vy', 'vz'))
         
         # there is no return function
 
+Orbit = M33AnalyticOrbit('M33Orbit.txt')
+Orbit.OrbitIntegration(0,0.5,10)
+M33_M31 = np.genfromtxt('M33Orbit.txt')
+
+def mag(vector):
+    magnitude = np.zeros([len(vector),2])
+    for i in range(len(vector)):
+        magnitude[i][0] = np.sqrt(vector[i][1]**2+vector[i][2]**2+vector[i][3]**2)
+        magnitude[i][1] = np.sqrt(vector[i][4]**2+vector[i][5]**2+vector[i][6]**2)
+    return magnitude
+
+OrbitMag = mag(M33_M31)
+#Plotting the orbit
+fig = plt.figure
+plt.plot(M33_M31[:,0],OrbitMag[:,0], label='M33-M31 position')
+plt.xlabel('Time [Gyr]')
+plt.ylabel('Seperation [kpc]')
+plt.legend()
+plt.show()
