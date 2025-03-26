@@ -21,10 +21,10 @@ import astropy.constants as const
 from IPython.display import Latex
 
 # **** import CenterOfMass to determine the COM pos/vel of M33
-
+from CenterOfMass import CenterOfMass
 
 # **** import the GalaxyMass to determine the mass of M31 for each component
-
+from GalaxyMass import ComponentMass
 
 # # M33AnalyticOrbit
 
@@ -34,52 +34,59 @@ from IPython.display import Latex
 class M33AnalyticOrbit:
     """ Calculate the analytical orbit of M33 around M31 """
     
-    def __init__(): # **** add inputs
+    def __init__(self, output_filename): # **** add inputs
                 """ **** ADD COMMENTS """
-
+	'''
+	This initializes the class and sets up various constant that will be used in the class calculations
+	Calculates positions and velocities of M31 and M33
+	Inputs:
+		output_filename: string, the filename where the output data will be stored
+	
+		
+	'''
         ### get the gravitational constant (the value is 4.498502151575286e-06)
         self.G = const.G.to(u.kpc**3/u.Msun/u.Gyr**2).value
         
         ### **** store the output file name
-        
+        self.fileout = output_filename
         
         ### get the current pos/vel of M33 
         # **** create an instance of the  CenterOfMass class for M33 
-
+	COM_M33 = CenterOfMass('M33', 2)
         # **** store the position VECTOR of the M33 COM (.value to get rid of units)
-
+	COM_M33_pos = COM_M33.COM_P(0.1,4.0).value #in HW 6 we defiend volDec to be 4.0 for M33
         # **** store the velocity VECTOR of the M33 COM (.value to get rid of units)
-        
+        COM_M33_vel = COM_M33.COM_V(COM_M33_pos[0], COM_M33_pos[1], COM_M33_pos[2]).value
         
         ### get the current pos/vel of M31 
         # **** create an instance of the  CenterOfMass class for M31 
-
+	COM_M31 = CenterOfMass('M31',2)
         # **** store the position VECTOR of the M31 COM (.value to get rid of units)
-
+	COM_M31_pos = COM_M31.COM_P(0.1,2.0).value
         # **** store the velocity VECTOR of the M31 COM (.value to get rid of units)
-        
+        COM_M31_vel = COM_M31.COM_V(COM_M31_pos[0], COM_M31_pos[1], COM_M31_pos[2]).value
         
         ### store the DIFFERENCE between the vectors posM33 - posM31
         # **** create two VECTORs self.r0 and self.v0 and have them be the
         # relative position and velocity VECTORS of M33
-        
-        
+        self.r0=np.array([COM_M33_pos[0]-COM_M31_pos[0],COM_M33_pos[1]-COM_M31_pos[1],COM_M33_pos[2]-COM_M31_pos[2])
+        self.v0=np.array([COM_M33_vel[0]-COM_M31_vel[0],COM_M33_vel[1]-COM_M31_vel[1],COM_M33_vel[2]-COM_M31_vel[2])
         ### get the mass of each component in M31 
         ### disk
         # **** self.rdisk = scale length (no units)
-
+	self.rdisk = 5*u.kpc
         # **** self.Mdisk set with ComponentMass function. Remember to *1e12 to get the right units. Use the right ptype
-        
+        self.Mdisk = ComponentMass('M31_000.txt',2)*1e12
         ### bulge
         # **** self.rbulge = set scale length (no units)
-
+	self.rbulge = 1*u.kpc
         # **** self.Mbulge  set with ComponentMass function. Remember to *1e12 to get the right units Use the right ptype
-        
+        self.Mbulge = ComponentMas('M31_000.txt',3)*1e12
         # Halo
         # **** self.rhalo = set scale length from HW5 (no units)
-
+	self.rhalo = 62*u.kpc
         # **** self.Mhalo set with ComponentMass function. Remember to *1e12 to get the right units. Use the right ptype
-     
+	self.Mhalo = 1.921*u.Msun*1e12
     
     
     def HernquistAccel("****"): # it is easiest if you take as an input the position VECTOR 
