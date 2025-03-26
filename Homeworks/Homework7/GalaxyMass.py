@@ -11,12 +11,8 @@ def ComponentMass(filename, particle_type):
 	output: total_mass (astropy quantity) the total mass of a particular particle type in the data
 	'''
 	time, total, data = Read(filename) #reads the data
-	index = np.where(data['type'] == particle_type) #finds the indexes of one particle type
-	mass_data = data['m'][index] #creates a new data list of mass from a single particle type
-	total_mass = np.sum(mass_data)*u.M_sun #sums all the mass of a desired particle type
-	total_mass = total_mass/(10**2) #mass is given in units of e10 MSol divide by e2 to get e12 units
-	total_mass = np.round(total_mass, 3) #round the mass value to 3 decimal places
-	return total_mass
+	mass = np.sum(data[data['type'] == particle_type]['m'])
+	return np.round(mass*1e10/1e12, 3)
 
 #Code used to get each value in table
 #Changed file between MW, M31, and M33 and component from 1,2,and 3
