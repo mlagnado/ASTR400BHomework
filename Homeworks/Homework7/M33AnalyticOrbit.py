@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 import astropy.units as u
 import astropy.constants as const
 # import Latex module so we can display the results with symbols
-from IPython.display import Latex
+#from IPython.display import Latex
 
 # **** import CenterOfMass to determine the COM pos/vel of M33
 from CenterOfMass import CenterOfMass
@@ -230,8 +230,8 @@ class M33AnalyticOrbit:
         
         # there is no return function
 
-Orbit = M33AnalyticOrbit('M33Orbit.txt')
-Orbit.OrbitIntegration(0,0.5,10)
+#Orbit = M33AnalyticOrbit('M33Orbit.txt')
+#Orbit.OrbitIntegration(0,0.1,10)
 M33_M31 = np.genfromtxt('M33Orbit.txt')
 
 def mag(vector):
@@ -242,10 +242,40 @@ def mag(vector):
     return magnitude
 
 OrbitMag = mag(M33_M31)
+
+from OrbitCOM import vector_dif
+M31 = np.genfromtxt('Orbit_M31.txt')
+M33 = np.genfromtxt('Orbit_M33.txt')
+
+
+
 #Plotting the orbit
 fig = plt.figure
 plt.plot(M33_M31[:,0],OrbitMag[:,0], label='M33-M31 position')
 plt.xlabel('Time [Gyr]')
 plt.ylabel('Seperation [kpc]')
+plt.legend()
+plt.show()
+
+fig = plt.figure()
+plt.plot(M31[:,0], vector_dif(M31,M33)[:,0], label='M31-M33', color='r')
+plt.xlabel('Time [Gyr]')
+plt.ylabel('Seperation [kpc]')
+plt.title('Seperation between M31 and M33 over time')
+plt.legend()
+plt.show()
+
+fig = plt.figure
+plt.plot(M33_M31[:,0],OrbitMag[:,1], label='M33-M31 velocity')
+plt.xlabel('Time [Gyr]')
+plt.ylabel('Velocity [km/s]')
+plt.legend()
+plt.show()
+
+fig = plt.figure()
+plt.plot(M31[:,0], vector_dif(M31,M33)[:,1], label='M31-M33', color='r')
+plt.xlabel('Time [Gyr]')
+plt.ylabel('Relative Velocity [km/s]')
+plt.title('Relative Velocity between M31 and M33 over time')
 plt.legend()
 plt.show()
