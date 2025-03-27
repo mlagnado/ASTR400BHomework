@@ -34,7 +34,7 @@ from GalaxyMass import ComponentMass
 class M33AnalyticOrbit:
     """ Calculate the analytical orbit of M33 around M31 """
     
-    def __init__(self, output_filename): # **** add inputs
+    def __init__(self, output_filename):
         '''
         This initializes the class and sets up various constant that will be used in the class calculations
         Calculates positions and velocities of M31 and M33
@@ -44,25 +44,25 @@ class M33AnalyticOrbit:
         ### get the gravitational constant (the value is 4.498502151575286e-06)
         self.G = const.G.to(u.kpc**3/u.Msun/u.Gyr**2).value
         
-        ### **** store the output file name
+        ### store the output file name
         self.fileout = output_filename
         
         ### get the current pos/vel of M33 
-        # **** create an instance of the  CenterOfMass class for M33 
+        # create an instance of the  CenterOfMass class for M33 
         COM_M33 = CenterOfMass('M33_000.txt', 2)
-        # **** store the position VECTOR of the M33 COM (.value to get rid of units)
+        # store the position VECTOR of the M33 COM (.value to get rid of units)
         COM_M33_pos = COM_M33.COM_P(0.1,4.0) #in HW 6 we defiend volDec to be 4.0 for M33
-        # **** store the velocity VECTOR of the M33 COM (.value to get rid of units)
-        COM_M33_vel = COM_M33.COM_V(COM_M33_pos[0], COM_M33_pos[1], COM_M33_pos[2])
-        
+        # store the velocity VECTOR of the M33 COM (.value to get rid of units)
+        COM_M33_vel = COM_M33.COM_V(COM_M33_pos[0], COM_M33_pos[1], COM_M33_pos[2]).value
+        COM_M33_pos = COM_M33_pos.value
         ### get the current pos/vel of M31 
         # **** create an instance of the  CenterOfMass class for M31 
         COM_M31 = CenterOfMass('M31_000.txt',2)
         # **** store the position VECTOR of the M31 COM (.value to get rid of units)
         COM_M31_pos = COM_M31.COM_P(0.1,2.0)
         # **** store the velocity VECTOR of the M31 COM (.value to get rid of units)
-        COM_M31_vel = COM_M31.COM_V(COM_M31_pos[0], COM_M31_pos[1], COM_M31_pos[2])
-        
+        COM_M31_vel = COM_M31.COM_V(COM_M31_pos[0], COM_M31_pos[1], COM_M31_pos[2]).value
+        COM_M31_pos = COM_M31_pos.value
         ### store the DIFFERENCE between the vectors posM33 - posM31
         # **** create two VECTORs self.r0 and self.v0 and have them be the
         # relative position and velocity VECTORS of M33
@@ -229,8 +229,8 @@ class M33AnalyticOrbit:
         
         # there is no return function
 
-#Orbit = M33AnalyticOrbit('M33Orbit.txt')
-#Orbit.OrbitIntegration(0,0.1,10)
+Orbit = M33AnalyticOrbit('M33Orbit.txt')
+Orbit.OrbitIntegration(0,0.1,10)
 M33_M31 = np.genfromtxt('M33Orbit.txt')
 
 def mag(vector):
