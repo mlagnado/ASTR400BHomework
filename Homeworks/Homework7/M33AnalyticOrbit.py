@@ -40,7 +40,6 @@ class M33AnalyticOrbit:
         Calculates positions and velocities of M31 and M33
         Inputs:
             output_filename: string, the filename where the output data will be stored
-
         '''
         ### get the gravitational constant (the value is 4.498502151575286e-06)
         self.G = const.G.to(u.kpc**3/u.Msun/u.Gyr**2).value
