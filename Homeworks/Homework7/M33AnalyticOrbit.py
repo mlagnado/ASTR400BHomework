@@ -142,9 +142,9 @@ class M33AnalyticOrbit:
         ### Call the previous functions for the halo, bulge and disk
         # these functions will take as inputs variable we defined in the initialization of the class like 
         # self.rdisk etc. 
-        Bulge_a = self.HernquistAccel(self.Mbulge, self.rbulge, self.r)
-        Halo_a = self.HernquistAccel(self.Mhalo, self.rhalo, self.r)
-        Disk_a = self.MiyamotoNagaiAccel(self.Mdisk, self.rdisk, self.r)
+        Bulge_a = self.HernquistAccel(self.Mbulge, self.rbulge, r)
+        Halo_a = self.HernquistAccel(self.Mhalo, self.rhalo, r)
+        Disk_a = self.MiyamotoNagaiAccel(self.Mdisk, self.rdisk, r)
         sum_accel = Bulge_a+Halo_a+Disk_a
             # return the SUM of the output of the acceleration functions - this will return a VECTOR 
         return sum_accel
@@ -241,10 +241,7 @@ class M33AnalyticOrbit:
         
         # there is no return function
 
-<<<<<<< HEAD
-=======
-#Calculat orbit
->>>>>>> a20e33469041f7bf09f16dc1fa33f98be9a53607
+#Calculate orbit
 #Orbit = M33AnalyticOrbit('M33Orbit.txt')
 #Orbit.OrbitIntegration(0,0.1,10)
 M33_M31 = np.genfromtxt('M33Orbit.txt')
