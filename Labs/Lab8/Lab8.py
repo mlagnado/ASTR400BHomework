@@ -191,24 +191,17 @@ print('## Part C ##')
 
 
 # normal galaxies 
-
-
-
+TIR_normal = 1e10*LsunErgS
+print(StarFormationRate(TIR_normal.value, 'TIR'))
 
 # LIRGs  
-
-
-
+TIR_LIRG = 1e11*LsunErgS
+print(StarFormationRate(TIR_LIRG.value, 'TIR'))
 
 # ULIRGs
-
-
-
+TIR_ULIRG =_1e12*LsunErgS
+print(StarFormationRate(TIR_ULIRG.value, 'TIR'))
 
 # HLIRGs
-
-
-
-
-
-
+TIR_HLIRG = 1e13*LsunErgS
+print(StarFormationRate(TIR_HLIRG.value, 'TIR'))
