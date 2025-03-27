@@ -52,7 +52,7 @@ def StarFormationRate(L, Type, TIR=0):
 
     else:
         print('Invalid Input:\nMissing wavelength input!!!\nWavelength input should be one of these {\'FUV\',\'NUV\',\'TIR\',\'Halpha\'}')
-
+        return f'WOMP WOMP why did you put {Type} as the Type?'
     #Correct the luminosity for dust using TIR
     Lcorr = L + TIRc*TIR
 
@@ -84,8 +84,8 @@ NUV_WLM = 1.71e7*LsunErgS #Value obtained from NED database for WLM galaxy
 TIR_WLM = 3.21e5*LsunErgS + 2.49e6*LsunErgS + 2.48e6*LsunErgS #midIR+farIR+nearIR
 
 #test SFR functions
-testSFR = StarFormationRate(NUV_WLM.value, 'NUV', TIR_WLM.value)
-print(testSFR)
+testSFR = StarFormationRate(NUV_WLM.value, 'star', TIR_WLM.value)
+print(testSFR) #fails
 
 
 print('## Part B ##')
@@ -118,37 +118,43 @@ def SFRMainSequence(Mstar, z):
     Outputs:
         SFR: float, log of the Star Formatino Rate {Msun} 
     '''
-    alpha=0.7-0.13*z
+    alpha = 0.7-0.13*z
     beta = 0.38 + 1.14*z -0.19*z**2
     SFR = alpha*(np.log10(Mstar) -10.5)+beta
     return SFR
 
 # # Step 2
 
-
+MWMstar = 7.5e10 #mass of milky way type galaxy
 
 # MW at z=0
-
-
-
-
+z0SFR = SFRMainSequence(MWMstar,0)
+print(np.round(z0SFR, 3))
+print(np.round(10**z0SFR, 3)) #not log
+'''
+#SFR is in units of solar masses / year
+'''
 # MW at z = 1
-
+z1SFR = SFRMainSequence(MWMstar, 1)
+print(np.round(z1SFR,3))
+print(np.round(10**z1SFR, 3)) #unlogged
 
 # # Step 3
 
 
 
 # create an array of stellar masses
+Masses = np.linspace(1e8, 1e12) #creates linear spacing not log spacing
 
 
 
 
-
-fig = plt.figure(figsize=(8,8), dpi=500)
+fig = plt.figure(figsize=(8,8), dpi=75)
 ax = plt.subplot(111)
 
 # add log log plots
+for z in range(4):
+    plt.plot(np.log10(Masses), SFRMainSequence(Masses,z), linewidth=2, label=f'z={z}')
 
 
 # Add axis labels
@@ -166,7 +172,8 @@ legend = ax.legend(loc='upper left',fontsize='x-large')
 
 
 # Save file
-#plt.savefig('Lab8_SFR_MainSequence.png')
+plt.savefig('Lab8_SFR_MainSequence.png')
+plt.show()
 
 print('## Part C ##')
 # # Part C  Starbursts
