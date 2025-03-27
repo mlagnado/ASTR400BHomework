@@ -199,7 +199,7 @@ TIR_LIRG = 1e11*LsunErgS
 print(StarFormationRate(TIR_LIRG.value, 'TIR'))
 
 # ULIRGs
-TIR_ULIRG =_1e12*LsunErgS
+TIR_ULIRG = 1e12*LsunErgS
 print(StarFormationRate(TIR_ULIRG.value, 'TIR'))
 
 # HLIRGs
