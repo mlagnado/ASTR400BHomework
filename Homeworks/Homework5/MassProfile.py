@@ -37,15 +37,15 @@ class MassProfile:
         Outputs:
             A list of masses from each radius in units of solar masses
         '''
-        COM = CenterOfMass(self.filename,ptype) #Calculates the center of mass
+        COM = CenterOfMass(self.filename,2) #Calculates the center of mass
         COM_p = COM.COM_P(0.1) #Calculates the position coordinates of the COM
         indexP = np.where(self.data['type'] == ptype) #Finds the data of a specific particle type
-        xR = self.x-COM_p[0] #Shifts the x position data by the COM coords
-        yR = self.y-COM_p[1]
-        zR = self.z-COM_p[2]
-        xP = xR[indexP] #Filters the x position data by the particle type
-        yP = yR[indexP]
-        zP = zR[indexP]
+        xR = self.x[indexP]-COM_p[0] #Shifts the x position data by the COM coords
+        yR = self.y[indexP]-COM_p[1]
+        zR = self.z[indexP]-COM_p[2]
+        xP = xR#[indexP] #Filters the x position data by the particle type
+        yP = yR#[indexP]
+        zP = zR#[indexP]
         mP = self.m[indexP]
         R = (xP**2 + yP**2 + zP**2)**0.5 #Calculates the radius at each point
         Masses = np.zeros(shape=len(radii)) #Initializes a list of masses (Same length as list of radii)
@@ -97,7 +97,8 @@ class MassProfile:
         '''
         const.G = const.G.to(u.kpc*u.km**2/u.s**2/u.Msun) #conversion of the G constant to desired units
         Mass = self.MassEnclosed(ptype,radii) #Calculates the mass enclosed at each radius
-        circvel = np.sqrt(const.G*Mass/radii) #Calculates the circular velocity of the enclosed mass at each radius
+        circvel = np.sqrt(const.G*Mass/(radii*u.kpc)) #Calculates the circular velocity of the enclosed mass at each radius
+        circvel.to(u.km/u.s)
         return circvel
     
     def CircularVelocityTotal(self,radii):
@@ -110,7 +111,8 @@ class MassProfile:
         '''
         const.G = const.G.to(u.kpc*u.km**2/u.s**2/u.Msun) #Converts G constant to the desired units
         MTotal = self.MassEnclosedTotal(radii) #Calculates the total enclosed mass at each radius
-        VTotal = np.sqrt(const.G*MTotal/radii) #Calculates the total circular velocity at each enclosed radius
+        VTotal = np.sqrt(const.G*MTotal/(radii*u.kpc)) #Calculates the total circular velocity at each enclosed radius
+        VTotal.to(u.km/u.s)
         return VTotal
 
     def HernquistVCirc(self,radii,a,Mhalo):
@@ -123,7 +125,7 @@ class MassProfile:
         '''
         const.G = const.G.to(u.kpc*u.km**2/u.s**2/u.Msun) #Converts the G constant into desired units
         Mass = self.HernquistMass(radii,a,Mhalo) #Calculates the hernquist mass at each radius
-        VCirc = np.sqrt(const.G*Mass/radii) #Calculates the circular velocity of the hernquist mass at each radius
+        VCirc = np.sqrt(const.G*Mass/(radii*u.kpc)) #Calculates the circular velocity of the hernquist mass at each radius
         return VCirc
 
 
