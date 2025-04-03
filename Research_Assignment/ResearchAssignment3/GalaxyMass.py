@@ -16,5 +16,5 @@ def ComponentMass(filename, particle_type):
 
 #Code used to get each value in table
 #Changed file between MW, M31, and M33 and component from 1,2,and 3
-MWHaloMass = ComponentMass('MW/MW_000.txt',1)
-print(MWHaloMass)
+#MWHaloMass = ComponentMass('MW/MW_000.txt',1)
+#print(MWHaloMass)
