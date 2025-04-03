@@ -251,18 +251,18 @@ Time_list =  Find_Timesteps('MW','M31')
 #    print(Jacobi_Rad(i, 'M31', 'MW'))
 
 #On each of those snap numbers produce a plot that shows the dispersion vs the radius
-for i in range(len(Time_list)):
-    disp, disp2, rad = calculate_dispersion(Time_list[i], 'MW','M31')
-
-    fig = plt.figure()
-    plt.scatter(rad,disp, label='Dispersion of MW')
-    plt.scatter(rad,disp2, label='Dispersion of MW2')
-    plt.ylabel('Dispersion [km/s]')
-    plt.semilogy() #looks nicer this way
-    plt.xlabel('Radius [kpc]')
-    plt.title('Dispersion vs Radius')
-    plt.legend()
-    plt.show()
+#for i in range(len(Time_list)):
+#    disp, disp2, rad = calculate_dispersion(Time_list[i], 'MW','M31')
+#
+#   fig = plt.figure()
+#    plt.scatter(rad,disp, label='Dispersion of MW')
+#    plt.scatter(rad,disp2, label='Dispersion of MW2')
+#    plt.ylabel('Dispersion [km/s]')
+#    plt.semilogy() #looks nicer this way
+#    plt.xlabel('Radius [kpc]')
+#    plt.title('Dispersion vs Radius')
+#    plt.legend()
+#    plt.show()
 
 #Only want to save a plot of one of them
 disp, disp2, rad = calculate_dispersion(Time_list[0], 'MW','M31')
