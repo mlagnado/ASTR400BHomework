@@ -118,7 +118,7 @@ def Jacobi_Rad(snap, galaxy1, galaxy2):
 #Dispersion is calculated by:
                         #sigma = sqrt(1/N * sum((v_i - V_mean)^2))
                         #V_mean is the mean velocity within the shell
-def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0):
+def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/50):
     '''
     This function
     input:
@@ -173,13 +173,18 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0):
     radius_list = []
     i = 1
 
+    #We will go to the 'edge' of MW when the two galaxies are far apart
+    upper_rad = 30
+    if jacobi_radius < 30:
+        upper_rad = jacobi_radius
     #We will first iterate over all radius starting from the edge of the first shell until the edge of the jacobi radius
-    while radii[i] < jacobi_radius:
+    while radii[i] < upper_rad:
         current_radii = R.value #create a temporary list with R coordinates
         current_vel = vR.value #again temporary list of velocity coords
         current_vx = vx_new.value
         current_vy = vy_new.value
         current_vz = vz_new.value
+#        print(radii[i-1], radii[i])
 #        print(current_vel)
         index_low = np.where(current_radii >= radii[i-1]) #Finds an index for the lower edge of the shell
         current_radii = current_radii[index_low] #Gets rid of values from our list that are below this lower bound
@@ -194,10 +199,10 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0):
         current_vx = current_vx[index_high]
         current_vy = current_vy[index_high]
         current_vz = current_vz[index_high]
-
+#        print(len(current_vel))
         #If our bounds didn't catch any particles this makes sure we don't have an error
         #It is mostly used far beyond the galaxy >30kpc for some rare cases
-        if len(current_vel) == 0: 
+        if len(current_vel) < 3: 
             i += 1
             continue
         #Now find avg velocity in this shell
@@ -206,6 +211,7 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0):
         mean_Vy = np.sum(current_vy)/len(current_vy)
         mean_Vz = np.sum(current_vz)/len(current_vz)
 
+        
         #And calculate dispersion in this shell from the mean
         sqr_dif = 0
         sqr_difx = 0
@@ -231,7 +237,7 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0):
         #Now add all of these values to the list
         dispersion_list.append(dispersion)
         dispersion2_list.append(dispersion2)
-        radius_list.append(R[i].value)
+        radius_list.append(radii[i])
 
         #continue iterating
         i += 1
@@ -253,12 +259,11 @@ Time_list =  Find_Timesteps('MW','M31')
 #On each of those snap numbers produce a plot that shows the dispersion vs the radius
 #for i in range(len(Time_list)):
 #    disp, disp2, rad = calculate_dispersion(Time_list[i], 'MW','M31')
-#
-#   fig = plt.figure()
-#    plt.scatter(rad,disp, label='Dispersion of MW')
-#    plt.scatter(rad,disp2, label='Dispersion of MW2')
+
+#    fig = plt.figure()
+#    plt.scatter(rad,disp, s=2, label='Dispersion of MW')
+#    plt.scatter(rad,disp2, s=3, label='Dispersion of MW2')
 #    plt.ylabel('Dispersion [km/s]')
-#    plt.semilogy() #looks nicer this way
 #    plt.xlabel('Radius [kpc]')
 #    plt.title('Dispersion vs Radius')
 #    plt.legend()
@@ -267,10 +272,9 @@ Time_list =  Find_Timesteps('MW','M31')
 #Only want to save a plot of one of them
 disp, disp2, rad = calculate_dispersion(Time_list[0], 'MW','M31')
 fig = plt.figure()
-plt.scatter(rad,disp, label='Dispersion of MW')
-plt.scatter(rad,disp2, label='Dispersion of MW2')
+plt.scatter(rad,disp, s=3, label='Dispersion of MW')
+plt.scatter(rad,disp2, s=3, label='Dispersion of MW2')
 plt.ylabel('Dispersion [km/s]')
-plt.semilogy() #looks nicer this way
 plt.xlabel('Radius [kpc]')
 plt.title('Dispersion vs Radius')
 plt.legend()
