@@ -145,7 +145,8 @@ class CosmologicalTools:
         """
         
         # FILL THIS IN
-        OmegaM = 0
+        Hz = self.HubbleParameter(z)
+        OmegaM = self.OmegaM0 * (1+z)**3 * (self.Ho/Hz)**2
         
         return OmegaM
     
@@ -164,7 +165,8 @@ class CosmologicalTools:
             Radiation Density Parameter at the given redshift.
         """
         # FILL THIS IN
-        OmegaR = 0
+        Hz = self.HubbleParameter(z)
+        OmegaR = self.OmegaR0 * (1+z)**4 * (self.Ho/Hz)**2
         
         return OmegaR
     
@@ -184,7 +186,8 @@ class CosmologicalTools:
             Dark Energy Density Parameter at the given redshift.
         """
         # FILL THIS IN
-        OmegaL = 0
+        Hz = self.HubbleParameter(z)
+        OmegaL = self.OmegaL0 * (self.Ho/Hz)**2
         
         return OmegaL
     
@@ -207,7 +210,7 @@ h_planck = 0.6781   # Hubble Constant  100 h km/s/Mpc
 
 
 
-print('## A ##')
+print('# A #')
 # Define here an instance of the Class Cosmological Tools
 # that follows the Benchmark Cosmology
 benchmark = CosmologicalTools(OmegaM0_planck, OmegaR0_planck, OmegaL0_planck, h_planck)
@@ -219,20 +222,20 @@ print('# B #')
 
 # Test Hubble Parameter at z = 0
 B = benchmark.HubbleParameter(0)
-print(B)
+print(np.round(B, 4))
 
 print('# C #')
 # Question 1 C) 
 
 # Compute the Hubble Parameter at z = 1 in BenchMark Cosmology
 C = benchmark.HubbleParameter(1)
-print(C)
+print(np.round(C, 4))
 
 
-
+print('# D #')
 # Question 1 D) 
 # Define the cosmology for the Einstein De Sitter Universe
-OmegaMD = 0
+OmegaMD = 1
 OmegaRD = 0 
 OmegaLD = 0 
 # h is the same as in Benchmark Cosmology
@@ -241,15 +244,15 @@ OmegaLD = 0
 
 
 # Define a New Instance of the Class with Einstein De Sitter Cosmology 
-
+DeSitter = CosmologicalTools(OmegaMD, OmegaRD, OmegaLD, h_planck)
 
 
 
 # Compute the Hubble Parameter at z = 1.0 in Einstein De Sitter Cosmology
-
-
+Hubble_param = DeSitter.HubbleParameter(1)
+print(np.round(Hubble_param, 4))
 # Is the recession velocity of a galaxy at a given distance larger or smaller than in the benchmark cosmology at z=1?
-# 
+# It will be faster 
 
 # 
 # ## B) 
@@ -261,10 +264,19 @@ OmegaLD = 0
 # An array of redshifts has already been defined (zrange), starting from the future  (zmin = -0.9) to the past (zmax = 10$^5$).
 # 
 
-
+print('## Part 2 ##')
+print('# B #')
 
 # Question 2 B) 
+# Define an array of redshift 
+zmax = 10**5
+zmin = -0.9
+zrange = np.arange(zmin, zmax, 0.01)
 
+#density parameters from benchmark
+OmegaM_z = benchmark.OmegaM_Z(zrange) #matter
+OmegaR_z = benchmark.OmegaR_Z(zrange) #radiation
+OmegaL_z = benchmark.OmegaL_Z(zrange) #dark energy
 
 # Plot the Redshift Evolution of OmegaM, OmegaR and OmegaL
 ############################################################
@@ -272,29 +284,22 @@ OmegaLD = 0
 fig = plt.figure(figsize=(10,10))
 ax = plt.subplot(111)
 
-# Define an array of redshift 
-zmax = 10**5
-zmin = -0.9
-zrange = np.arange(zmin, zmax, 0.01)
 
 
 # Evolution of Matter Density Parameter as a function of 1+z
 # FILL THIS IN
-#plt.semilogx(  , color='blue', linewidth=5, 
-#             label=r'$\Omega_M$(z)')
+plt.semilogx(1+zrange, OmegaM_z , color='blue', linewidth=5,label=r'$\Omega_M$(z)')
 
 # Evolution of Radiation Density Parameter 
 # FILL THIS IN 
-#plt.semilogx(  , color='red', linewidth=5, 
-#             linestyle="--", label=r'$\Omega_R$(z)')
+plt.semilogx(1+zrange, OmegaR_z, color='red', linewidth=5, linestyle="--", label=r'$\Omega_R$(z)')
 
 # Evolution of Dark Energy Density Parameter 
 # FILL THIS IN
-#plt.semilogx(  , color='black', linewidth=5, 
-#             linestyle=":", label=r'$\Omega_L$(z)')
+plt.semilogx(1+zrange, OmegaL_z, color='black', linewidth=5, linestyle=":", label=r'$\Omega_L$(z)')
 
 # Add a vertical line to indicate today 
-
+plt.vlines(1, 0, 1, ls=':', linewidth=4)
 
 # Add axis labels
 plt.xlabel('1+z', fontsize=22)
@@ -311,9 +316,9 @@ legend = ax.legend(loc='upper center', fontsize='x-large',
                    bbox_to_anchor=(0.5, 1.05),ncol=3, fancybox=True, shadow=True)
 
 # Save to a file
-#plt.savefig('Lab11_DensityParameterEvolution.png')
-
-
+plt.savefig('Lab11_DensityParameterEvolution.png')
+plt.show()
+print('# C #')
 # 
 # ## C) 
 # 
