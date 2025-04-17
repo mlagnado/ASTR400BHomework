@@ -323,8 +323,10 @@ print('# C #')
 # ## C) 
 # 
 # -  At what redshift does radiation dominate? This epoch is referred to as matter-radiation equality.
+## - Radiation mattered after 10^4 z which is way in the past
+
 # -  At what redshift does dark energy dominate?
-# 
+## - Dark energy dominated more recently a little before 10^0 z which is closer to present day
 # 
 
 
