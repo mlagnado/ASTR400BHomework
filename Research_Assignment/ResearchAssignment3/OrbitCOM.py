@@ -95,9 +95,9 @@ def Orbit_COM(galaxy, start, end, n):
 '''
 Runs the orbit calculations
 '''
-#Orbit_COM("MW",0,801,5) #Only do if want to redo calculation ~3min
-#Orbit_COM("M31",0,801,5)
-#Orbit_COM("M33",0,801,5)
+Orbit_COM("MW",0,801,5) #Only do if want to redo calculation ~3min
+Orbit_COM("M31",0,801,5)
+Orbit_COM("M33",0,801,5)
 
 # Read in the data files for the orbits of each galaxy that you just created
 # headers:  t, x, y, z, vx, vy, vz
