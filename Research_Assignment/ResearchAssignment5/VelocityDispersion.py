@@ -84,9 +84,9 @@ def Jacobi_Rad(snap, galaxy1, galaxy2):
     inputs:
         snap: int, The snap number that the jacobi radius will be calculated at
         galaxy1: string, the name of the galaxy that the jacobi radius will be calculated for ('MW, 'M31'...)
-        galaxy1: string, the name of the galaxy that is bound to the first ('MW, 'M31'...)    
+        galaxy2: string, the name of the galaxy that is bound to the first ('MW, 'M31'...)    
     output:
-        J_rad: 
+        J_rad: float, the Jacobi radius of galaxy1
     '''
     snap_num = '000' + str(snap) #Turns the snap number into a string
     snap_num = snap_num[-3:] #Makes sure the snap number is only 3 characters long
@@ -118,7 +118,7 @@ def Jacobi_Rad(snap, galaxy1, galaxy2):
 #Dispersion is calculated by:
                         #sigma = sqrt(1/N * sum((v_i - V_mean)^2))
                         #V_mean is the mean velocity within the shell
-def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/50):
+def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
     '''
     This function
     input:
@@ -270,13 +270,13 @@ Time_list =  Find_Timesteps('MW','M31')
 #    plt.show()
 
 #Only want to save a plot of one of them
-disp, disp2, rad = calculate_dispersion(Time_list[0], 'MW','M31')
-fig = plt.figure()
-plt.scatter(rad,disp, s=3, label='Dispersion of MW')
-plt.scatter(rad,disp2, s=3, label='Dispersion of MW2')
-plt.ylabel('Dispersion [km/s]')
-plt.xlabel('Radius [kpc]')
-plt.title('Dispersion vs Radius')
-plt.legend()
-plt.savefig(f'MW_Dispersion_{Time_list[0]}')
-plt.show()
+#disp, disp2, rad = calculate_dispersion(Time_list[0], 'MW','M31')
+#fig = plt.figure()
+#plt.scatter(rad,disp, s=3, label='Dispersion of MW')
+#plt.scatter(rad,disp2, s=3, label='Dispersion of MW2')
+#plt.ylabel('Dispersion [km/s]')
+#plt.xlabel('Radius [kpc]')
+#plt.title('Dispersion vs Radius')
+#plt.legend()
+#plt.savefig(f'MW_Dispersion_{Time_list[0]}')
+#plt.show()
