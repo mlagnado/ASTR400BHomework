@@ -13,7 +13,7 @@ from OrbitCOM import vector_dif
 from GalaxyMass import ComponentMass
 from CenterOfMass import CenterOfMass
 '''
-Velocity Dispersion: How does the velocity dispersion of each galaxy, in this showcase MW, evolve (bulge/disk) throughout the interaction (until they merge 50 Gyr)
+Velocity Dispersion: How does the velocity dispersion of each galaxy, in this showcase MW, evolve (bulge/disk) throughout the interaction (until they merge 6.5 Gyr)
 I am going to look at how the velocity dispersion of MW change throughout its interaction with M31.
 Velocity Dispersion is a quantity that is useful to display how well ordered the galaxy is or how disordered it becomes after an interaction.
 '''
@@ -87,6 +87,8 @@ def Jacobi_Rad(snap, galaxy1, galaxy2):
         galaxy2: string, the name of the galaxy that is bound to the first ('MW, 'M31'...)    
     output:
         J_rad: float, the Jacobi radius of galaxy1
+
+    Eqn from King et. al. 1962
     '''
     snap_num = '000' + str(snap) #Turns the snap number into a string
     snap_num = snap_num[-3:] #Makes sure the snap number is only 3 characters long

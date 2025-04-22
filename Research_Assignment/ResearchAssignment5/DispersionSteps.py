@@ -1,3 +1,15 @@
+'''
+Velocity Dispersion: How does the velocity dispersion of each galaxy, in this showcase MW, evolve (bulge/disk) throughout the interaction (until they merge 6.5 Gyr)
+I am going to look at how the velocity dispersion of MW change throughout its interaction with M31.
+Velocity Dispersion is a quantity that is useful to display how well ordered the galaxy is or how disordered it becomes after an interaction.
+'''
+
+#Goal of this code
+'''
+This code is designed to create a plot for the interesting snap numbers.
+The interesting snap numbers occur at local minima and maxima for separation between MW and M31.
+'''
+
 # import modules
 import numpy as np
 import astropy.units as u
@@ -18,8 +30,8 @@ from VelocityDispersion import calculate_dispersion
 #Create a list of snap numbers
 Time_list =  Find_Timesteps('MW','M31')
 #Galaxy1 = np.genfromtxt(f'Orbit_MW.txt')
-for i in Time_list:
-    print(i)
+#for i in Time_list:
+#    print(i)
 #print(Time_list)
 #for i in Time_list:
 #    print(Jacobi_Rad(i, 'M31', 'MW'))
@@ -28,10 +40,12 @@ def Time_at_snap(list, galaxy1, galaxy2):
     '''
     This function takes in a list of snap numbers and returns the Time and separation of two galaxies at those snap numbers
     input:
-
+        list: array of integers, Includes all the snap numbers
+        galaxy1: string, the galaxy that the dispersion will be calculated for
+        galaxy2: string, the other galaxy that impacts jacobi radius
     output:
-        Sep
-        Time
+        Sep: array of floats, Includes the separation between two galaxies at each snap number
+        Time: array of floats, Includes the time in Gyr at each snap number
     '''
     Galaxy1 = np.genfromtxt(f'Orbit_{galaxy1}.txt')
     Galaxy2 = np.genfromtxt(f'Orbit_{galaxy2}.txt')
@@ -52,7 +66,7 @@ M31 = np.genfromtxt('Orbit_M31.txt')
 Seps, Times = Time_at_snap(Time_list, 'MW', 'M31')
 fig = plt.figure()
 plt.plot(MW[:,0], vector_dif(MW,M31)[:,0], label='MW-M31', color='r')
-plt.scatter(Times, Seps)
+plt.scatter(Times, Seps, label='Local Max/Min')
 plt.xlabel('Time [Gyr]')
 plt.ylabel('Seperation [kpc]')
 plt.title('Seperation between MW and M31 over time')
@@ -73,4 +87,5 @@ for i in range(len(Time_list)):
     plt.xlabel('Radius [kpc]')
     plt.title(f'Dispersion vs Radius at snap number: {Time_list[i]}')
     plt.legend()
+    plt.savefig(f'MW_VelocityDispersion{i}.png')
     plt.show()
