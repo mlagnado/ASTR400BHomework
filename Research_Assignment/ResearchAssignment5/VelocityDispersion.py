@@ -174,7 +174,9 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
     dispersion2_list = []
     radius_list = []
     i = 1
-
+    '''
+    HERE YOU SHOULD ELIMINATE THE USE OF APPENDING TO A LIST
+    '''
     #We will go to the 'edge' of MW when the two galaxies are far apart
     upper_rad = 30
     if jacobi_radius < 30:
@@ -250,7 +252,7 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
 Testing it out
 '''
 #Create a list of snap numbers
-Time_list =  Find_Timesteps('MW','M31')
+#Time_list =  Find_Timesteps('MW','M31')
 #Galaxy1 = np.genfromtxt(f'Orbit_MW.txt')
 #for i in Time_list:
 #    print(Galaxy1[i][0])

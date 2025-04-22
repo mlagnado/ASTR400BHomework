@@ -1,4 +1,4 @@
-'''
+    '''
 Velocity Dispersion: How does the velocity dispersion of each galaxy, in this showcase MW, evolve (bulge/disk) throughout the interaction (until they merge 6.5 Gyr)
 I am going to look at how the velocity dispersion of MW change throughout its interaction with M31.
 Velocity Dispersion is a quantity that is useful to display how well ordered the galaxy is or how disordered it becomes after an interaction.
@@ -47,13 +47,16 @@ def Time_at_snap(list, galaxy1, galaxy2):
         Sep: array of floats, Includes the separation between two galaxies at each snap number
         Time: array of floats, Includes the time in Gyr at each snap number
     '''
-    Galaxy1 = np.genfromtxt(f'Orbit_{galaxy1}.txt')
+    Galaxy1 = np.genfromtxt(f'Orbit_{galaxy1}.txt') #Loading in the data
     Galaxy2 = np.genfromtxt(f'Orbit_{galaxy2}.txt')
-    Separation = vector_dif(Galaxy1, Galaxy2)
+    Separation = vector_dif(Galaxy1, Galaxy2) #Outputs the difference in position and velocity
     All_Time = Galaxy1[:,0] #Is the same for galaxy 1 or 2
     Time = []
     Sep = []
-    for i in list:
+    '''
+    HERE YOU SHOULD ELIMINATE THE USE OF APPENDING TO A LIST
+    '''
+    for i in list: #get the times and separations for these time steps
         Time.append(All_Time[i])
         Sep.append(Separation[i,0])
 #    print(Sep, Time)
