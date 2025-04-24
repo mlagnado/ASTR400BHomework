@@ -446,7 +446,7 @@ class CosmologicalTools:
         """
     
         #  FILL THIS IN
-        DA = 0 
+        DA = self.ComovingDistance(0,ze)/(1+ze) #Again we observe at z=0 (now)
         
         return  DA   
     
@@ -476,9 +476,9 @@ class CosmologicalTools:
         angleRad = (angle*u.arcsec).to(u.rad)
     
         # FILL THIS IN
-        size = 0
+        size = self.AngularDiameterDistance(ze)*angleRad.value
     
-        return size
+        return size.to(u.kpc)
     
     
 
@@ -815,11 +815,5 @@ print('# C #')
 
 # Angle = Size/DA
 # What is the separation between two galaxies separated by 1 arcsec at z=1 in the Benchmark Cosmology
-
-
-# In[ ]:
-
-
-
-
-
+sep = 1 #Don't actually need units yet
+print(np.round(Benchmark.Size(1,sep),3))
