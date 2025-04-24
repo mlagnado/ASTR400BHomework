@@ -406,7 +406,7 @@ class CosmologicalTools:
     # Input:    Redshift emitted (ze) 
     # Output:   DL  in Mpc
         """ Method that computes the Luminosity Distance to an object at some redshift (ze)
-               DL = DC*(1+zobs)
+               DL = DC*(1+ze)
             
         PARAMETERS
         --------- 
@@ -420,7 +420,7 @@ class CosmologicalTools:
         """
 
         # FILL THIS IN
-        DL = 0
+        DL = self.ComovingDistance(0,ze)*(1+ze) #zo (observer) is zero we are always looking at today
         
         return  DL
     
@@ -762,6 +762,8 @@ legend = ax.legend(loc='upper right',fontsize=20)
 plt.savefig('Lab12_HorizonDistance.png')
 plt.show()
 
+print('## Part 3 ##')
+print('# B #')
 # ## Question 3 B)
 # 
 #  Luminosity distances are used to measure distances and infer redshifts for standard candles. 
@@ -783,7 +785,10 @@ plt.show()
 
 # What is the Luminosity Distance? 
 # m-M = 5*log(DL/Mpc) + 25
-
+m = 25.1 #apparent Mag
+M = -19.3 #absolute Mag (Type 1A SN)
+Lum_Dist_SN = np.round(10**((m-M-25)/5.0),3)*u.Mpc
+print(Lum_Dist_SN)
 
 # In[ ]:
 
@@ -794,10 +799,13 @@ plt.show()
 
 # In[ ]:
 
-
+print(np.round(Benchmark.LuminosityDistance(1.0944),3)) #Guess and check
+zSN = 1.0944
 # What is the proper distance to this supernova given our current rate of expansion? 
+print(np.round(Benchmark.ProperDistance(0,zSN),3))
 
-
+print('## Part 4 ##')
+print('# C #')
 # ## Question 4 C) 
 
 # In[ ]:
