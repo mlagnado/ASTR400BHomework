@@ -359,12 +359,12 @@ class CosmologicalTools:
         # 1/H(zrange)*speed of light
         # Speed of light is loaded in modules from astropy, but in units of m/s --> need in km/s
         # FILL THIS IN
-    
-        
+        c_kms = c.to(u.km/u.s)
+        y = c_kms/self.HubbleParameter(zrange)#integrand
     
         # Integrate y numerically over zrange and return in units of Mpc
         # FILL THIS IN 
-        DC = 0
+        DC = simps(y, zrange)*u.Mpc
         
         return DC 
     
@@ -394,13 +394,13 @@ class CosmologicalTools:
     
         # Comoving Distance[ independent of time] x the scale factor at the time of observation.
         # FILL THIS IN 
-        DH = 0
+        DH = self.ComovingDistance(zo, ze)/(1+zo)
         
         return DH 
 
  
     # Question 3 A)
-    
+
     def LuminosityDistance(self, ze): 
     # Function that computes DL, the luminosity distance of a galaxy at a given redshift
     # Input:    Redshift emitted (ze) 
@@ -632,7 +632,7 @@ legend = ax.legend(loc='upper left',fontsize=20)
 plt.savefig('Lab12_LookBackTime.png')
 plt.show()
 
-
+print('## Part 2 ##')
 print('# C #')
 # ## Question 2 C)
 
@@ -642,27 +642,29 @@ print('# C #')
 # Question 2 B
 
 # What is the size of the presently observable universe in the Benchmark cosmology ? (pick a large z)
-
+print(np.round(Benchmark.ProperDistance(0,1000),3))
 
 # In[ ]:
 
 
 # Double Check that the size of the Comoving Distance and Proper Distance are the same
 # since the observer is at z=0 
+print(np.round(Benchmark.ComovingDistance(0,1000),3))
 
 
 # In[ ]:
 
 
 # What is the size of the presently observable universe in the Einstein De Sitter cosmology? (pick a large z)
+print(np.round(Desitter.ProperDistance(0,1000),3))
 
 
 # In[ ]:
 
 
 # Which Universe is larger? 
-
-
+print('The Benchmark universe is larger')
+print('# D #')
 # ## Question 2 D)
 
 # In[ ]:
@@ -674,32 +676,36 @@ print('# C #')
 
 
 # In[ ]:
-
+z1 = 0.01
+z2 = 0.05
 
 # What is Radial Distance between these galaxies today (z=0)? 
 # This is equivalent to the Comoving Distance or Proper Distance between the galaxies
+Dist_z1 = Benchmark.ProperDistance(0,z1) #Dist to galaxy 1
+Dist_z2 = Benchmark.ProperDistance(0,z2) #Dist to galaxy 2
 
-
+difference = (Dist_z2-Dist_z1) #Distance between the two galaxies
+print(np.round(difference,3))
 # In[ ]:
 
 
 # What is the Proper Distance between these two galaxies as measured by galaxy 1 (at z=0.01)?
-
-
+print(np.round(Benchmark.ProperDistance(z1,z2),3))
+print('# E #')
 # ## Question 2 E)
 
 # In[ ]:
 
 
 # What is the size of the observable universe at z=2? 
-
+print(np.round(Benchmark.ProperDistance(2,1000),3))
 
 # In[ ]:
 
 
 # how much larger was the universe then vs now?
-
-
+print('The universe was about 5 times larger')
+print('# F #')
 # ##  Question 2 F)
 # Plot the Horizon Distance as a Function of Redshift out to z=10 for the BenchMark and Einstein DeSitter Cosmology
 # 
@@ -731,9 +737,13 @@ ax = plt.subplot(111)
 
 # Comoving Distance
 # FILL THIS IN
-#plt.semilogy(###, ### , linewidth=5, label='BenchMark')
 
-#plt.semilogy(### , ###  , linewidth=5, linestyle='--', label='DeSitter')
+HorizonBenchmark = [Benchmark.ProperDistance(i,1000).value for i in zrange2]
+HorizonDeSitter = [Desitter.ProperDistance(i,1000).value for i in zrange2]
+
+plt.semilogy(zrange2+1, HorizonBenchmark, linewidth=5, label='BenchMark')
+
+plt.semilogy(zrange2+1, HorizonDeSitter, linewidth=5, linestyle='--', label='DeSitter')
 
 
 # Add axis labels
@@ -750,7 +760,7 @@ legend = ax.legend(loc='upper right',fontsize=20)
 
 # Save to a file
 plt.savefig('Lab12_HorizonDistance.png')
-
+plt.show()
 
 # ## Question 3 B)
 # 
