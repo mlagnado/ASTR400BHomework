@@ -44,18 +44,25 @@ def Find_Timesteps(G1, G2):
     Galaxy2 = np.genfromtxt(f'Orbit_{G2}.txt')
 
     Separation = vector_dif(Galaxy1, Galaxy2) #This fxn spits out the distance and velocity separation
+    Separation = Separation[:,0]
+    times = Galaxy1[:,0]
+#    print(Separation)
+    index = np.where(times <= 6.50)[0]  #Get the indices where times <= 6.5 Gyr
+    Separation = Separation[index] #Filter Separation by index
+#    print(Separation)
+    times = times[index] #Filter time by that index
+#    print(Separation[1:-1], Separation[:-2], Separation[2:])
+    maxima_indices = np.where((Separation[1:-1] > Separation[0:-2]) & (Separation[1:-1] > Separation[2:]))[0] + 1  # Local maxima add 1 because we shift the current by 1
+#    print(maxima_indices)
+    minima_indices = np.where((Separation[1:-1] < Separation[0:-2]) & (Separation[1:-1] < Separation[2:]))[0] + 1  # Local minima
 
-    snap_nums = [0] #We will look at the first timestep for sure and then loop to add other important timesteps
-    i = 1
-#    print(Galaxy1[i][0])
-    while Galaxy1[i][0] <= 6.50: #6.50 Gyr is when the close encounters start to occur often this is "during the merger"
-        if Separation[i][0] > Separation[i-1][0] and Separation[i][0] > Separation[i+1][0]: #determines if the point is maxima
-            snap_nums.append(i)
-        elif Separation[i][0] < Separation[i-1][0] and Separation[i][0] < Separation[i+1][0]: #determines if a point is a minima
-            snap_nums.append(i)
-        i += 1
+    # Combine maxima and minima indices
+    snap_indices = np.concatenate([maxima_indices, minima_indices])
+    
+    snap_nums = np.array([0] + list(snap_indices))
+    snap_nums = np.sort(snap_nums)
 
-    return np.array(snap_nums)
+    return snap_nums
 
 #To calculate the Jacobi radius we need to know the separation between MW and M31 at each of our points of interest
 #Jacobi radius is calculated by:
@@ -168,19 +175,16 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
 #    print(jacobi_radius,radii)
 
 #Calculates the dispersion in two ways.
-    #First method: obtain magnitude of velocity and calculate dispersion of the magnitude of 3D velocity
-    #Second method: obtains the magnitude of each velocity vector component and calculates the magnitude of the velocity dispersion from them
-    dispersion_list = [] #initializes lists for outputs
-    dispersion2_list = []
-    radius_list = []
     i = 1
-    '''
-    HERE YOU SHOULD ELIMINATE THE USE OF APPENDING TO A LIST
-    '''
     #We will go to the 'edge' of MW when the two galaxies are far apart
     upper_rad = 30
     if jacobi_radius < 30:
         upper_rad = jacobi_radius
+    #First method: obtain magnitude of velocity and calculate dispersion of the magnitude of 3D velocity
+    #Second method: obtains the magnitude of each velocity vector component and calculates the magnitude of the velocity dispersion from them
+    dispersion_list = np.zeros(len(radii[radii < upper_rad])) #initializes lists for outputs
+    dispersion2_list = np.zeros(len(radii[radii < upper_rad])) 
+    radius_list = np.zeros(len(radii[radii < upper_rad])) 
     #We will first iterate over all radius starting from the edge of the first shell until the edge of the jacobi radius
     while radii[i] < upper_rad:
         current_radii = R.value #create a temporary list with R coordinates
@@ -239,20 +243,19 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
         dispersion2 = np.sqrt(dispersionx**2 + dispersiony**2 + dispersionz**2)
 
         #Now add all of these values to the list
-        dispersion_list.append(dispersion)
-        dispersion2_list.append(dispersion2)
-        radius_list.append(radii[i])
+        dispersion_list[i] = dispersion
+        dispersion2_list[i] = dispersion2
+        radius_list[i] = radii[i]
 
         #continue iterating
         i += 1
 
-    return np.array(dispersion_list), np.array(dispersion2_list), np.array(radius_list)
-
+    return dispersion_list, dispersion2_list, radius_list
 '''
 Testing it out
 '''
 #Create a list of snap numbers
-#Time_list =  Find_Timesteps('MW','M31')
+Time_list =  Find_Timesteps('MW','M31')
 #Galaxy1 = np.genfromtxt(f'Orbit_MW.txt')
 #for i in Time_list:
 #    print(Galaxy1[i][0])
@@ -274,13 +277,13 @@ Testing it out
 #    plt.show()
 
 #Only want to save a plot of one of them
-#disp, disp2, rad = calculate_dispersion(Time_list[0], 'MW','M31')
-#fig = plt.figure()
-#plt.scatter(rad,disp, s=3, label='Dispersion of MW')
-#plt.scatter(rad,disp2, s=3, label='Dispersion of MW2')
-#plt.ylabel('Dispersion [km/s]')
-#plt.xlabel('Radius [kpc]')
-#plt.title('Dispersion vs Radius')
-#plt.legend()
+disp, disp2, rad = calculate_dispersion(Time_list[0], 'MW','M31')
+fig = plt.figure()
+plt.scatter(rad,disp, s=3, label='Dispersion of MW')
+plt.scatter(rad,disp2, s=3, label='Dispersion of MW2')
+plt.ylabel('Dispersion [km/s]')
+plt.xlabel('Radius [kpc]')
+plt.title('Dispersion vs Radius')
+plt.legend()
 #plt.savefig(f'MW_Dispersion_{Time_list[0]}')
-#plt.show()
+plt.show()
