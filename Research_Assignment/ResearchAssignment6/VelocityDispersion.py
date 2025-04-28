@@ -255,7 +255,7 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
 Testing it out
 '''
 #Create a list of snap numbers
-Time_list =  Find_Timesteps('MW','M31')
+#Time_list =  Find_Timesteps('MW','M31')
 #Galaxy1 = np.genfromtxt(f'Orbit_MW.txt')
 #for i in Time_list:
 #    print(Galaxy1[i][0])
@@ -277,13 +277,13 @@ Time_list =  Find_Timesteps('MW','M31')
 #    plt.show()
 
 #Only want to save a plot of one of them
-disp, disp2, rad = calculate_dispersion(Time_list[0], 'MW','M31')
-fig = plt.figure()
-plt.scatter(rad,disp, s=3, label='Dispersion of MW')
-plt.scatter(rad,disp2, s=3, label='Dispersion of MW2')
-plt.ylabel('Dispersion [km/s]')
-plt.xlabel('Radius [kpc]')
-plt.title('Dispersion vs Radius')
-plt.legend()
+#disp, disp2, rad = calculate_dispersion(Time_list[0], 'MW','M31')
+#fig = plt.figure()
+#plt.scatter(rad,disp, s=3, label='Dispersion of MW')
+#plt.scatter(rad,disp2, s=3, label='Dispersion of MW2')
+#plt.ylabel('Dispersion [km/s]')
+#plt.xlabel('Radius [kpc]')
+#plt.title('Dispersion vs Radius')
+#plt.legend()
 #plt.savefig(f'MW_Dispersion_{Time_list[0]}')
-plt.show()
+#plt.show()
