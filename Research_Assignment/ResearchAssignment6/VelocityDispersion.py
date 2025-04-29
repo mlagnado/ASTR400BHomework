@@ -127,7 +127,7 @@ def Jacobi_Rad(snap, galaxy1, galaxy2):
 #Dispersion is calculated by:
                         #sigma = sqrt(1/N * sum((v_i - V_mean)^2))
                         #V_mean is the mean velocity within the shell
-def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
+def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/2):
     '''
     This function
     input:
@@ -157,7 +157,6 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
     y_vel = data['vy'][index]*u.km/u.s
     z_vel = data['vz'][index]*u.km/u.s
 
-
     x_new = x_pos - COM_pos[0] #Shifts coordinates to be centered on  galaxy 1 COM
     y_new = y_pos - COM_pos[1]
     z_new = z_pos - COM_pos[2]
@@ -166,6 +165,8 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
     vy_new = y_vel - COM_vel[1]
     vz_new = z_vel - COM_vel[2]
     vR = np.sqrt(vx_new**2 + vy_new**2 + vz_new**2)
+    vtheta = np.arctan(vy_new/vx_new)
+    vcirc = (-y_new*vx_new + x_new*vy_new)/(x_new**2 + y_new**2)
 
     jacobi_radius = Jacobi_Rad(snap, galaxy1, galaxy2)#Calculates the jacobi radius at this timestep
 
@@ -180,6 +181,8 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
     upper_rad = 30
     if jacobi_radius < 30:
         upper_rad = jacobi_radius
+    upper_rad = 30
+    radii = np.arange(0.0,30+r,r)
     #First method: obtain magnitude of velocity and calculate dispersion of the magnitude of 3D velocity
     #Second method: obtains the magnitude of each velocity vector component and calculates the magnitude of the velocity dispersion from them
     dispersion_list = np.zeros(len(radii[radii < upper_rad])) #initializes lists for outputs
@@ -192,6 +195,8 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
         current_vx = vx_new.value
         current_vy = vy_new.value
         current_vz = vz_new.value
+        current_vth = vtheta.value
+        current_circ = vcirc.value
 #        print(radii[i-1], radii[i])
 #        print(current_vel)
         index_low = np.where(current_radii >= radii[i-1]) #Finds an index for the lower edge of the shell
@@ -200,6 +205,8 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
         current_vx = current_vx[index_low]
         current_vy = current_vy[index_low]
         current_vz = current_vz[index_low]
+        current_vth = current_vth[index_low]
+        current_circ = current_circ[index_low]
 #        print(radii[i-1], radii[i])
         index_high = np.where(current_radii < radii[i]) #Finds an index for the upper edge of the shell
         current_radii = current_radii[index_high] #Gets rid of values beyond the upper edge of shell
@@ -207,6 +214,8 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
         current_vx = current_vx[index_high]
         current_vy = current_vy[index_high]
         current_vz = current_vz[index_high]
+        current_vth = current_vth[index_high]
+        current_circ = current_circ[index_high]
 #        print(len(current_vel))
         #If our bounds didn't catch any particles this makes sure we don't have an error
         #It is mostly used far beyond the galaxy >30kpc for some rare cases
@@ -218,13 +227,16 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
         mean_Vx = np.sum(current_vx)/len(current_vx) #x avg vel
         mean_Vy = np.sum(current_vy)/len(current_vy)
         mean_Vz = np.sum(current_vz)/len(current_vz)
-
+        mean_vth = np.sum(current_vth)/len(current_vth)
+        mean_circ = np.sum(current_circ)/len(current_circ)
         
         #And calculate dispersion in this shell from the mean
         sqr_dif = 0
         sqr_difx = 0
         sqr_dify = 0
         sqr_difz = 0
+        sqr_difth = 0
+        sqr_circ = 0
 
         #calculates the square difference for the values in our bounds
         for k in range(len(current_vel)):
@@ -232,12 +244,16 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/3):
             sqr_difx += (current_vx[k] - mean_Vx)**2
             sqr_dify += (current_vy[k] - mean_Vy)**2
             sqr_difz += (current_vz[k] - mean_Vz)**2
+            sqr_difth += (current_vth[k] - mean_vth)**2
+            sqr_circ += (current_circ[k] - mean_circ)**2
 #            print(sqr_dif)
         #Lastly we calculate the dispersion for each of our velocities
         dispersion = np.sqrt((1/len(current_vel)) * sqr_dif)
         dispersionx = np.sqrt((1/len(current_vx)) * sqr_difx)
         dispersiony = np.sqrt((1/len(current_vy)) * sqr_dify)
         dispersionz = np.sqrt((1/len(current_vz)) * sqr_difz)
+        dispersionth = np.sqrt((1/len(current_vth)) * sqr_difth)
+        dispersioncirc = np.sqrt((1/len(current_circ)) * sqr_circ)
 
         #Now for our second method we find the magnitude of this dispersion
         dispersion2 = np.sqrt(dispersionx**2 + dispersiony**2 + dispersionz**2)
