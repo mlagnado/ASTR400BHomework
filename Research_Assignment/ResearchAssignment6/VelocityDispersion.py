@@ -127,7 +127,7 @@ def Jacobi_Rad(snap, galaxy1, galaxy2):
 #Dispersion is calculated by:
                         #sigma = sqrt(1/N * sum((v_i - V_mean)^2))
                         #V_mean is the mean velocity within the shell
-def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/2):
+def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/1):
     '''
     This function
     input:
