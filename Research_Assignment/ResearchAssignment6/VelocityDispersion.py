@@ -181,8 +181,8 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/1):
     upper_rad = 30
     if jacobi_radius < 30:
         upper_rad = jacobi_radius
-    upper_rad = 30
-    radii = np.arange(0.0,30+r,r)
+    upper_rad = 32
+    radii = np.arange(0.0,32+r,r)
     #First method: obtain magnitude of velocity and calculate dispersion of the magnitude of 3D velocity
     #Second method: obtains the magnitude of each velocity vector component and calculates the magnitude of the velocity dispersion from them
     dispersion_list = np.zeros(len(radii[radii < upper_rad])) #initializes lists for outputs

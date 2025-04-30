@@ -76,21 +76,21 @@ plt.show()
 
 
 #On each of those snap numbers produce a plot that shows the dispersion vs the radius
-fig = plt.figure()
-cmap = plt.get_cmap('cool') 
-color_val = np.linspace(0,1,len(Time_list))
-for i in range(len(Time_list)):
-    disp, disp2, rad = calculate_dispersion(Time_list[i], 'MW','M31')
-    color = cmap(color_val[i])
-    plt.plot(rad[1:],disp[1:], linewidth=2, alpha=0.5, label=f'Dispersion of MW at t={Times[i]}Gyr', color=color)
+#fig = plt.figure()
+#cmap = plt.get_cmap('cool') 
+#color_val = np.linspace(0,1,len(Time_list))
+#for i in range(len(Time_list)):
+#    disp, disp2, rad = calculate_dispersion(Time_list[i], 'MW','M31')
+#    color = cmap(color_val[i])
+#    plt.plot(rad[1:],disp[1:], linewidth=2, alpha=0.5, label=f'Dispersion of MW at t={Times[i]}Gyr', color=color)
 #    plt.plot(rad[1:],disp2[1:], linewidth=2, alpha=0.5, label=f'Dispersion of MW at t={Times[i]}Gyr', color=color)
 
-plt.ylabel('Dispersion [km/s]')
-plt.xlabel('Radius [kpc]')
-plt.title(f'Dispersion vs Radius')
-plt.legend()
-plt.savefig(f'MW_VelocityDispersion1.png')
-plt.show()
+#plt.ylabel('Dispersion [km/s]')
+#plt.xlabel('Radius [kpc]')
+#plt.title(f'Dispersion vs Radius')
+#plt.legend()
+#plt.savefig(f'MW_VelocityDispersion1.png')
+#plt.show()
 
 fig = plt.figure()
 cmap = plt.get_cmap('cool') 
@@ -106,3 +106,10 @@ plt.title(f'Dispersion vs Radius')
 plt.legend()
 plt.savefig(f'MW_VelocityDispersion.png')
 plt.show()
+
+#print quantified values
+disp0, disp02, rad = calculate_dispersion(Time_list[0], 'MW', 'M31')
+dispL, dispL2, rad = calculate_dispersion(Time_list[-1], 'MW', 'M31')
+difference = dispL2-disp02
+print(difference[-4:])
+print(rad[-4:])
