@@ -52,7 +52,7 @@ def Find_Timesteps(G1, G2):
 #    print(Separation)
     times = times[index] #Filter time by that index
 #    print(Separation[1:-1], Separation[:-2], Separation[2:])
-    maxima_indices = np.where((Separation[1:-1] > Separation[0:-2]) & (Separation[1:-1] > Separation[2:]))[0] + 1  # Local maxima add 1 because we shift the current by 1
+    maxima_indices = np.where((Separation[1:-1] > Separation[0:-2]) & (Separation[1:-1] > Separation[2:]))[0] + 1  # Local maxima add 1 because the 'current' step starts at 1
 #    print(maxima_indices)
     minima_indices = np.where((Separation[1:-1] < Separation[0:-2]) & (Separation[1:-1] < Separation[2:]))[0] + 1  # Local minima
 
@@ -100,21 +100,24 @@ def Jacobi_Rad(snap, galaxy1, galaxy2):
     snap_num = '000' + str(snap) #Turns the snap number into a string
     snap_num = snap_num[-3:] #Makes sure the snap number is only 3 characters long
     G1_filename = galaxy1 + '/' + galaxy1 + '_' + snap_num + '.txt' #opens the correct file
-    G1_Halo = ComponentMass(G1_filename, 1) #calculates mass of component
-    G1_Disk = ComponentMass(G1_filename, 2)
-    G1_Bulge = ComponentMass(G1_filename, 3)
+
+    R_0 = Separation(snap, galaxy1, galaxy2) #Utilizes previous fxn for separation
+
+    G1_Halo = ComponentMass(G1_filename, 1, R_0) #calculates mass of component of the mass enclosed in the separation of the two galaxies
+    G1_Disk = ComponentMass(G1_filename, 2, R_0)
+    G1_Bulge = ComponentMass(G1_filename, 3, R_0)
     G1_mass = G1_Bulge + G1_Disk + G1_Halo #adds mass of all components
 
     #same is done for the other galaxy
     G2_filename = galaxy2 + '/' + galaxy2 + '_' + snap_num + '.txt'
-    G2_Halo = ComponentMass(G2_filename, 1)
-    G2_Disk = ComponentMass(G2_filename, 2)
-    G2_Bulge = ComponentMass(G2_filename, 3)
+    G2_Halo = ComponentMass(G2_filename, 1, R_0)
+    G2_Disk = ComponentMass(G2_filename, 2, R_0)
+    G2_Bulge = ComponentMass(G2_filename, 3, R_0)
     G2_mass = G2_Bulge + G2_Disk + G2_Halo
 
     Tot_mass = G1_mass + G2_mass #gets the total mass for jacobi calc
 
-    R_0 = Separation(snap, galaxy1, galaxy2) #Utilizes previous fxn for separation
+
 
     rj = R_0 * (G1_mass / (2 * Tot_mass))**(1/3) #As in lab 4 calculate jacobi radius
     return rj
@@ -271,13 +274,13 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/1):
 Testing it out
 '''
 #Create a list of snap numbers
-#Time_list =  Find_Timesteps('MW','M31')
+Time_list =  Find_Timesteps('MW','M31')
 #Galaxy1 = np.genfromtxt(f'Orbit_MW.txt')
 #for i in Time_list:
 #    print(Galaxy1[i][0])
 #print(Time_list)
-#for i in Time_list:
-#    print(Jacobi_Rad(i, 'M31', 'MW'))
+for i in Time_list:
+    print(Jacobi_Rad(i, 'M31', 'MW'))
 
 #On each of those snap numbers produce a plot that shows the dispersion vs the radius
 #for i in range(len(Time_list)):
