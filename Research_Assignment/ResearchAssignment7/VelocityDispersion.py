@@ -58,8 +58,8 @@ def Find_Timesteps(G1, G2):
 
     # Combine maxima and minima indices
     snap_indices = np.concatenate([maxima_indices, minima_indices])
-    
-    snap_nums = np.array([0] + list(snap_indices))
+    snap_nums = np.insert(snap_indices,-1,0) #Lastly we can't forget snapshot 0 as a baseline.
+#    snap_nums = np.array([0] + list(snap_indices))
     snap_nums = np.sort(snap_nums)
 
     return snap_nums
@@ -102,12 +102,12 @@ def Jacobi_Rad(snap, galaxy1, galaxy2):
     G1_filename = galaxy1 + '/' + galaxy1 + '_' + snap_num + '.txt' #opens the correct file
 
     R_0 = Separation(snap, galaxy1, galaxy2) #Utilizes previous fxn for separation
-
+#    print(R_0)
     G1_Halo = ComponentMass(G1_filename, 1, R_0) #calculates mass of component of the mass enclosed in the separation of the two galaxies
     G1_Disk = ComponentMass(G1_filename, 2, R_0)
     G1_Bulge = ComponentMass(G1_filename, 3, R_0)
     G1_mass = G1_Bulge + G1_Disk + G1_Halo #adds mass of all components
-
+#    print(G1_mass)
     #same is done for the other galaxy
     G2_filename = galaxy2 + '/' + galaxy2 + '_' + snap_num + '.txt'
     G2_Halo = ComponentMass(G2_filename, 1, R_0)
@@ -219,47 +219,53 @@ def calculate_dispersion(snap,galaxy1, galaxy2,r=2.0/1):
         current_vz = current_vz[index_high]
         current_vth = current_vth[index_high]
         current_circ = current_circ[index_high]
+        '''
+        This is all commented out because np.std() completes the same job
+        '''
 #        print(len(current_vel))
         #If our bounds didn't catch any particles this makes sure we don't have an error
         #It is mostly used far beyond the galaxy >30kpc for some rare cases
-        if len(current_vel) < 3: 
-            i += 1
-            continue
-        #Now find avg velocity in this shell
-        mean_V = np.sum(current_vel)/len(current_vel) #avg vel
-        mean_Vx = np.sum(current_vx)/len(current_vx) #x avg vel
-        mean_Vy = np.sum(current_vy)/len(current_vy)
-        mean_Vz = np.sum(current_vz)/len(current_vz)
-        mean_vth = np.sum(current_vth)/len(current_vth)
-        mean_circ = np.sum(current_circ)/len(current_circ)
+#        if len(current_vel) < 3: 
+#            i += 1
+#            continue
+#        #Now find avg velocity in this shell
+#        mean_V = np.sum(current_vel)/len(current_vel) #avg vel
+#        mean_Vx = np.sum(current_vx)/len(current_vx) #x avg vel
+#        mean_Vy = np.sum(current_vy)/len(current_vy)
+#        mean_Vz = np.sum(current_vz)/len(current_vz)
+#        mean_vth = np.sum(current_vth)/len(current_vth)
+#        mean_circ = np.sum(current_circ)/len(current_circ)
         
         #And calculate dispersion in this shell from the mean
-        sqr_dif = 0
-        sqr_difx = 0
-        sqr_dify = 0
-        sqr_difz = 0
-        sqr_difth = 0
-        sqr_circ = 0
+#        sqr_dif = 0
+#        sqr_difx = 0
+#        sqr_dify = 0
+#        sqr_difz = 0
+#        sqr_difth = 0
+#        sqr_circ = 0
 
         #calculates the square difference for the values in our bounds
-        for k in range(len(current_vel)):
-            sqr_dif += (current_vel[k] - mean_V)**2
-            sqr_difx += (current_vx[k] - mean_Vx)**2
-            sqr_dify += (current_vy[k] - mean_Vy)**2
-            sqr_difz += (current_vz[k] - mean_Vz)**2
-            sqr_difth += (current_vth[k] - mean_vth)**2
-            sqr_circ += (current_circ[k] - mean_circ)**2
+#        for k in range(len(current_vel)):
+#            sqr_dif += (current_vel[k] - mean_V)**2
+#            sqr_difx += (current_vx[k] - mean_Vx)**2
+#            sqr_dify += (current_vy[k] - mean_Vy)**2
+#            sqr_difz += (current_vz[k] - mean_Vz)**2
+#            sqr_difth += (current_vth[k] - mean_vth)**2
+#            sqr_circ += (current_circ[k] - mean_circ)**2
 #            print(sqr_dif)
         #Lastly we calculate the dispersion for each of our velocities
-        dispersion = np.sqrt((1/len(current_vel)) * sqr_dif)
-        dispersionx = np.sqrt((1/len(current_vx)) * sqr_difx)
-        dispersiony = np.sqrt((1/len(current_vy)) * sqr_dify)
-        dispersionz = np.sqrt((1/len(current_vz)) * sqr_difz)
-        dispersionth = np.sqrt((1/len(current_vth)) * sqr_difth)
-        dispersioncirc = np.sqrt((1/len(current_circ)) * sqr_circ)
+#        dispersion = np.sqrt((1/len(current_vel)) * sqr_dif)
+#        dispersionx = np.sqrt((1/len(current_vx)) * sqr_difx)
+#        dispersiony = np.sqrt((1/len(current_vy)) * sqr_dify)
+#        dispersionz = np.sqrt((1/len(current_vz)) * sqr_difz)
+#        dispersionth = np.sqrt((1/len(current_vth)) * sqr_difth)
+#        dispersioncirc = np.sqrt((1/len(current_circ)) * sqr_circ)
 
         #Now for our second method we find the magnitude of this dispersion
-        dispersion2 = np.sqrt(dispersionx**2 + dispersiony**2 + dispersionz**2)
+#        dispersion2 = np.sqrt(dispersionx**2 + dispersiony**2 + dispersionz**2)
+        #try out np.std()
+        dispersion = np.std(current_vel) #Calculates the dispersion at this timestep
+        dispersion2 = np.std(np.sqrt(current_vx**2 + current_vy**2 + current_vz**2)) #method two gets the same results
 
         #Now add all of these values to the list
         dispersion_list[i] = dispersion
@@ -277,9 +283,11 @@ Testing it out
 Time_list =  Find_Timesteps('MW','M31')
 #Galaxy1 = np.genfromtxt(f'Orbit_MW.txt')
 #for i in Time_list:
+#    print(i)
 #    print(Galaxy1[i][0])
 #print(Time_list)
 for i in Time_list:
+    print(i)
     print(Jacobi_Rad(i, 'M31', 'MW'))
 
 #On each of those snap numbers produce a plot that shows the dispersion vs the radius

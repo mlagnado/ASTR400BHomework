@@ -36,11 +36,11 @@ Time_list =  Find_Timesteps('MW','M31')
 #for i in Time_list:
 #    print(Jacobi_Rad(i, 'M31', 'MW'))
 
-def Time_at_snap(list, galaxy1, galaxy2):
+def Time_at_snap(snaps, galaxy1, galaxy2):
     '''
-    This function takes in a list of snap numbers and returns the Time and separation of two galaxies at those snap numbers
+    This function takes in an array of snap numbers and returns the Time and separation of two galaxies at those snap numbers
     input:
-        list: array of integers, Includes all the snap numbers
+        snaps: array of integers, Includes all the snap numbers
         galaxy1: string, the galaxy that the dispersion will be calculated for
         galaxy2: string, the other galaxy that impacts jacobi radius
     output:
@@ -51,11 +51,11 @@ def Time_at_snap(list, galaxy1, galaxy2):
     Galaxy2 = np.genfromtxt(f'Orbit_{galaxy2}.txt')
     Separation = vector_dif(Galaxy1, Galaxy2) #Outputs the difference in position and velocity
     All_Time = Galaxy1[:,0] #Is the same for galaxy 1 or 2
-    Time = np.zeros(len(list))
-    Sep = np.zeros(len(list))
-    for i in range(len(list)): #get the times and separations for these time steps
-        Time[i] = All_Time[list[i]]
-        Sep[i] = Separation[list[i],0]
+    Time = np.zeros(len(snaps))
+    Sep = np.zeros(len(snaps))
+    for i in range(len(snaps)): #get the times and separations for these time steps
+        Time[i] = All_Time[snaps[i]]
+        Sep[i] = Separation[snaps[i],0]
 #    print(Sep, Time)
     return Sep, Time
 
@@ -71,7 +71,7 @@ plt.xlabel('Time [Gyr]')
 plt.ylabel('Seperation [kpc]')
 plt.title('Seperation between MW and M31 over time')
 plt.legend()
-plt.savefig('MW-M31sep.png')
+plt.savefig('MLagnado_Separation.png')
 plt.show()
 
 
@@ -92,24 +92,41 @@ plt.show()
 #plt.savefig(f'MW_VelocityDispersion1.png')
 #plt.show()
 
-fig = plt.figure()
+fig,ax = plt.subplots(nrows=1,ncols=2,figsize=(10,6))
 cmap = plt.get_cmap('cool') 
 color_val = np.linspace(0,1,len(Time_list))
 for i in range(len(Time_list)):
     disp, disp2, rad = calculate_dispersion(Time_list[i], 'MW','M31')
     color = cmap(color_val[i])
-    plt.plot(rad[1:],disp2[1:], linewidth=2, alpha=0.5, label=f'Dispersion of MW at t={Times[i]}Gyr', color=color)
+    ax[0].plot(rad[1:],disp[1:], linewidth=2, alpha=0.5, label=f'Dispersion of MW at t={np.round(Times[i],1)}Gyr', color=color)
 
-plt.ylabel('Dispersion [km/s]')
-plt.xlabel('Radius [kpc]')
-plt.title(f'Dispersion vs Radius')
-plt.legend()
-plt.savefig(f'MW_VelocityDispersion.png')
-plt.show()
+ax[0].set_ylabel('Dispersion [km/s]')
+ax[0].set_xlabel('Radius [kpc]')
+ax[0].set_title(f'Dispersion vs Radius')
+ax[0].legend()
+
 
 #print quantified values
+#disp0, disp02, rad = calculate_dispersion(Time_list[0], 'MW', 'M31')
+#dispL, dispL2, rad = calculate_dispersion(Time_list[1], 'MW', 'M31')
+#difference = dispL2-disp02
+#print(difference[-4:])
+#print(rad[-4:])
+
+
 disp0, disp02, rad = calculate_dispersion(Time_list[0], 'MW', 'M31')
-dispL, dispL2, rad = calculate_dispersion(Time_list[-1], 'MW', 'M31')
-difference = dispL2-disp02
-print(difference[-4:])
+for i in range(len(Time_list)):
+    if i == 0:
+        continue
+    disp, disp2, rad = calculate_dispersion(Time_list[i], 'MW','M31')
+    difference = disp2-disp0
+    print(difference[-4:])
+    color = cmap(color_val[i])
+    ax[1].plot(rad[1:],difference[1:], linewidth=2, alpha=0.5, label=f'Dispersion Change of MW at t={np.round(Times[i],1)}Gyr', color=color)
 print(rad[-4:])
+ax[1].set_ylabel('Dispersion [km/s]')
+ax[1].set_xlabel('Radius [kpc]')
+ax[1].set_title(f'Dispersion Change vs Radius')
+ax[1].legend()
+plt.savefig(f'MLagnado_Dispersion.png')
+plt.show()
